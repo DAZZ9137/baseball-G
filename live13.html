@@ -94,11 +94,12 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 @media(max-width:1100px){.gnext .gl,.gnext .tm{display:none}}
 @media(max-width:640px){.gnext .vn,.gnext .op{display:none}.gnext{justify-content:center}.gbar{grid-template-columns:minmax(0,.8fr) minmax(0,2fr) minmax(0,.8fr)!important}}
 .gnone{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:12px;border:1px dashed #5d8a63;color:#a9c6a4;font-size:13.5px}
+.glogo{display:inline-flex;border-radius:11px;box-shadow:0 0 0 1px #5d8a63}.glogo svg{display:block}
 </style>
 </head>
 <body>
 <header class="top">
-  <a class="ib" href="index.html" aria-label="경기 목록으로">⌂</a>
+  <a class="glogo" href="index.html" aria-label="경기 목록으로" title="경기 목록으로"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#151515"/><text x="24" y="33" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="34" fill="#ef7d22" stroke="#fff" stroke-width="1.6" paint-order="stroke">g</text></svg></a>
   <div class="tt"><h1 id="title"></h1><div class="st" id="sub"></div></div>
   <div class="hl" id="hl"></div><div class="tools"><button class="ib" id="thm" aria-label="화면 밝기 전환">☀</button><button class="ib" id="fsb" aria-label="전체화면 전환">⤢</button></div>
   <div class="gbar"><a class="gnext gprev" id="gprev" hidden></a><div class="pk"><button class="gsel" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><a class="gnext" id="gnext" hidden></a></div>
