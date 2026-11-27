@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>스웨인즈 전력분석판</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 덕아웃 전광판 — 짧고 크게, 1초 판독
+   IDEA: 야구장 전광판 + 잔디 위 타구 분포
+   PICTURE: 녹색 부채꼴 경기장의 타구(단타 노랑·장타 파랑·홈런 빨강)
+   COLOUR/TYPE: 전광판 딥그린, 잔디 3단계, Noto Sans KR
+   LAYOUT: 고정 바 → 투수 → 타자 카드 → 선발/후보 → 맞대결 → 스코어보드 */
+:root{color-scheme:light dark;--bg:light-dark(#eef2ea,#0f1712);--card:light-dark(#fff,#18241c);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--line:light-dark(#d6ddd0,#33463a);--chip:light-dark(#eef3ea,#223128);--fantop:light-dark(#27500A,#b5e07e);--cs:light-dark(#8a5a0b,#FAC775);--cx:light-dark(#185FA5,#8cc0f2);--ch:light-dark(#c62828,#ff9a9a);--board:#14361d}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+.top{position:sticky;top:0;z-index:5;background:var(--board);color:#f4f9f1;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;padding:8px max(2vw,12px)}
+.top h1{font-size:20px;margin:0;font-weight:700}.top .st{font-size:13px;color:#d3e6cf}
+.nav{display:flex;gap:6px}.nav button{min-width:48px;height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font-size:18px;cursor:pointer}
+.nav button:focus-visible,summary:focus-visible{outline:3px solid #fac775}
+.wrap{padding:10px max(2vw,12px) 28px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+h2{font-size:18px;margin:20px 2px 8px;font-weight:700;display:flex;align-items:center;gap:8px}
+h2 .cnt{font-size:13px;font-weight:500;color:var(--sub)}
+.cd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.cd.lead{border:2px solid #7cb342}.cd.sub{border-style:dashed}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.who{display:flex;align-items:center;gap:7px;font-size:19px;font-weight:700;line-height:1.2}
+.ord{flex:none;width:28px;height:28px;border-radius:50%;background:#27500A;color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700;border:2px solid #97C459}
+.ord.s{width:auto;padding:0 7px;border-radius:6px;background:transparent;color:var(--sub);border:1.5px dashed var(--sub);font-size:12px;height:24px}
+.no{color:var(--sub);font-weight:500}.ps{font-size:14px;font-weight:500;color:var(--sub)}
+.bt{font-size:13px;font-weight:500;white-space:nowrap}.bt.u{color:var(--sub);font-weight:400}
+.stt{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;background:var(--chip);border-radius:8px;padding:3px 0;margin:6px 0 3px}
+.stt b{display:block;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}.stt i{font-style:normal;font-size:11.5px;color:var(--sub)}
+.fan{width:100%;height:auto;max-height:28vh;display:block}
+.ft{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;font-size:13.5px;margin-top:2px}
+.tag{font-weight:700}.ft span span{white-space:nowrap}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin:10px 2px 0;align-items:center}
+.note{font-size:12.5px;color:var(--sub);margin:6px 2px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.pc .stt{grid-template-columns:repeat(5,1fr)}
+.pill{display:inline-block;font-size:12.5px;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0;font-weight:500}
+.pill.r{background:#fcebeb;color:#791f1f}.pill.b{background:#e6f1fb;color:#0c447c}.pill.y{background:#faeeda;color:#633806}.pill.g{background:#eaf3de;color:#27500a}
+.atk{margin:6px 0 0;padding-left:18px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.sb{background:var(--board);color:#f4f9f1;border-radius:12px;padding:10px 12px;overflow-x:auto}
+.sb td,.sb th{padding:5px 8px;text-align:center;border-bottom:1px solid #2c5534;font-size:14px;white-space:nowrap}.sb th{color:#c9e0c4;font-weight:500}.sb td:first-child,.sb th:first-child{text-align:left}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+summary{cursor:pointer;padding:12px 14px;font-size:15px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px;min-height:44px;align-items:center}
+summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:var(--sub)}details[open] summary::after{content:"접기 ▴"}
+.res{font-size:13px;padding:2px 8px;border-radius:6px;margin-left:6px}.res.w{background:#eaf3de;color:#27500a}.res.l{background:#fcebeb;color:#791f1f}.res.d{background:#f1efe8;color:#444441}
+.dt{padding:0 14px 14px}.dt .sb{margin-bottom:10px}
+.bx td,.bx th{padding:6px 8px;border-bottom:1px solid var(--line);font-size:14px;text-align:left;vertical-align:top}.bx th{color:var(--sub);font-weight:500}.bx td.n{text-align:right;white-space:nowrap}
+.bx .sb2 td:first-child{color:var(--sub)}
+.scroll{overflow-x:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1 id="title"></h1><div class="st" id="sub"></div></div>
+  <div class="nav" id="nav"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></div>
+</header>
+<main class="wrap">
+  <h2>상대 투수 · 공략 포인트</h2>
+  <section id="pit" class="pgrid"></section>
+
+  <h2 id="mainHead"></h2>
+  <section id="main" class="grid"></section>
+  <div class="lg">
+    <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#FAC775" stroke="#633806"/></svg> 단타</span>
+    <span><svg width="16" height="16"><circle cx="8" cy="8" r="6.5" fill="#378ADD" stroke="#042C53"/></svg> 장타(2·3루타)</span>
+    <span><svg width="16" height="16"><path d="M8 1 L10 5.8 L15 6.2 L11.2 9.4 L12.4 14.6 L8 11.8 L3.6 14.6 L4.8 9.4 L1 6.2 L6 5.8Z" fill="#E24B4A" stroke="#501313"/></svg> 홈런</span>
+    <span><svg width="12" height="12"><circle cx="6" cy="6" r="3.5" fill="#fff" stroke="#5F5E5A"/></svg> 아웃·실책·야선</span>
+    <span>잔디 음영 <b style="color:#3b7a12">■</b> 50%↑ <b style="color:#639922">■</b> 30~49% <b style="color:#9cc46b">■</b> 30%↓</span>
+  </div>
+
+  <div id="lineupBlock">
+    <h2>선발 9명 <span class="cnt">타순 순</span></h2>
+    <section id="starters" class="grid"></section>
+    <h2>후보 · 교체 선수 <span class="cnt" id="subCnt"></span></h2>
+    <section id="subs" class="grid"></section>
+  </div>
+
+  <h2>26년 맞대결 <span class="cnt">눌러서 상세 보기</span></h2>
+  <section id="h2h"></section>
+
+  <h2>스코어보드</h2>
+  <div class="sb"><table><thead><tr><th>팀</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>R</th><th>H</th><th>B</th></tr></thead>
+  <tbody><tr><td>글로베어스</td><td colspan="10" style="color:#c9e0c4">경기 시작 후 게임원 박스스코어 자동 반영(구현 예정)</td></tr><tr><td id="oppName"></td><td colspan="10"></td></tr></tbody></table></div>
+  <p class="note" id="basis"></p>
+  <p class="note">타구 점은 방향(좌·중·우)과 깊이(내야·외야·펜스 앞·펜스 밖)만 기록 기준이며, 구역 안 세부 위치는 자동 배치입니다. 삼진·볼넷·사구는 제외, 유격수 방향은 좌·2루수 방향은 우로 분류. 성적은 게임원 공식 기록. 투수 탈삼진율·4사구율은 게임원 기준 7이닝 환산.</p>
+</main>
+<script>
+{
+const D={"title": "스웨인즈 전력분석판", "mode": "pre", "inn": "1회말", "opp": "스웨인즈", "sub": "스웨인즈 · 27.01.16(토) 14:00 성남고 · 상대 라인업 발표 전 · 26 타자기록 순 전체 표시", "basis": "데이터: 게임원 2026 스웨인즈 13경기(전부 성남고 C조 · 타 리그 없음) · 성적은 팀 기록통계 공식값 · 2026.11.27 수집", "raw": "이상훈(32)|우투우타|6|1.000|1.000|1.000|2.000|0|0|0|2|Z\n이성화(99)|우투우타|7|0.667|0.786|0.667|1.452|0|0|0|6|rtAoA\n오명송(3)|우투우타|10|0.615|0.645|0.731|1.376|1|1|0|19|ZAoFAAAEcrrDFFzAsDtAfcF\n이선민(55)|우투우타|11|0.583|0.688|0.917|1.604|3|1|1|9|FDALFcLFIZLrrEFLRF\n양문성(64)|우투우타|1|0.500|0.667|0.500|1.167|0|0|0|2|DZ\n이정호(12)|우투우타|10|0.474|0.655|0.632|1.287|1|1|0|11|XLLFZZFtF\n박세용(2)|우투우타|10|0.429|0.600|0.619|1.219|2|1|0|10|DDEFZLADDZDrLLAD\n손승범(13)|우투우타|13|0.379|0.472|0.448|0.920|2|0|0|8|IZDFDZEDIILDDtoDcXrfFtI\n천종현(17)|우투우타|11|0.379|0.424|0.552|0.976|1|2|0|6|DDfzAZFDDrFrFccrwXLEstrD\n황수환(14)|우투우타|11|0.375|0.515|0.417|0.932|1|0|0|9|EXAsAcEfrAFFFIIrZ\n문상구(39)|좌투좌타|11|0.250|0.444|0.350|0.794|0|1|0|3|ozrosr\n정찬영(73)||4|0.250|0.250|0.250|0.500|0|0|0|0|DDFt\n강유민(16)|우투우타|7|0.222|0.588|0.222|0.810|0|0|0|4|FD\n오영호(7)|우투우타|13|0.208|0.406|0.250|0.656|1|0|0|5|DLDIDFrU", "roster": [{"o": "", "pos": "미", "nm": "이상훈(32)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전 · 최근 08.15"}, {"o": "", "pos": "투", "nm": "이성화(99)", "memo": "주 타순 8번(4회) · 최근 5경기 3회 출전 · 최근 09.19"}, {"o": "", "pos": "유", "nm": "오명송(3)", "memo": "주 타순 1번(4회) · 최근 5경기 4회 출전 · 최근 10.24"}, {"o": "", "pos": "一", "nm": "이선민(55)", "memo": "주 타순 4번(10회) · 최근 5경기 4회 출전 · 최근 10.24"}, {"o": "", "pos": "좌", "nm": "양문성(64)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전 · 최근 05.09"}, {"o": "", "pos": "三", "nm": "이정호(12)", "memo": "주 타순 5번(5회) · 최근 5경기 4회 출전 · 최근 10.24"}, {"o": "", "pos": "중", "nm": "박세용(2)", "memo": "주 타순 3번(6회) · 최근 5경기 5회 출전 · 최근 10.24"}, {"o": "", "pos": "우", "nm": "손승범(13)", "memo": "주 타순 5번(6회) · 최근 5경기 5회 출전 · 최근 10.24"}, {"o": "", "pos": "유", "nm": "천종현(17)", "memo": "주 타순 1번(7회) · 최근 5경기 3회 출전 · 최근 10.24"}, {"o": "", "pos": "二", "nm": "황수환(14)", "memo": "주 타순 2번(6회) · 최근 5경기 5회 출전 · 최근 10.24"}, {"o": "", "pos": "좌", "nm": "문상구(39)", "memo": "주 타순 6번(4회) · 최근 5경기 4회 출전 · 최근 10.24"}, {"o": "", "pos": "투", "nm": "정찬영(73)", "memo": "주 타순 8번(2회) · 최근 5경기 2회 출전 · 최근 09.12"}, {"o": "", "pos": "二", "nm": "강유민(16)", "memo": "주 타순 8번(4회) · 최근 5경기 2회 출전 · 최근 08.15"}, {"o": "", "pos": "포", "nm": "오영호(7)", "memo": "주 타순 9번(9회) · 최근 5경기 5회 출전 · 최근 10.24"}], "pit": [{"nm": "이성화(99)", "role": "26 선발 8회", "ERA": "5.82", "G": 11, "IP": "27.2", "H": 34, "HR": 0, "BB": 39, "HBP": 6, "SO": 35, "WHIP": "2.64", "OAVG": "0.288", "K7": "8.86"}, {"nm": "정찬영(73)", "role": "26 선발 5회", "ERA": "6.13", "G": 10, "IP": "24.0", "H": 35, "HR": 3, "BB": 14, "HBP": 12, "SO": 18, "WHIP": "2.04", "OAVG": "0.333", "K7": "5.25"}], "h2h": [{"date": "26.04.18", "place": "성남중", "score": "글로 5 : 8 스웨인즈", "result": "패", "line": [["팀", "1", "2", "3", "4", "5", "6", "7", "R", "H", "E", "B"], ["글로베어스", "0", "0", "5", "0", "", "", "", "5", "6", "7", "5"], ["스웨인즈", "3", "2", "0", "3", "", "", "", "8", "13", "5", "1"]], "bat": [["1", "지", "이선민(55)", "좌선2 ; 좌안", "2-2-0"], ["1", "투", "정찬영(73)", "대수비 ; 삼진", "1-0-0"], ["2", "중", "천종현(17)", "우월3 ; 유내안 ; 중안,도루", "3-3-1"], ["3", "유", "오명송(3)", "좌안,포구실책,도루,송구실책 ; 유내안,도루 ; 유내안,도루", "3-3-1"], ["4", "一", "박세용(2)", "삼진 ; 유실,송구실책,도루 ; 좌안,포구실책", "3-1-4"], ["5", "三", "황수환(14)", "유내안,도루자 ; 낫아웃- ; 1실,포구실책,도루", "3-1-0"], ["6", "우", "손승범(13)", "중안,도루 ; 유플 ; 좌안,도루", "3-2-0"], ["7", "포", "오영호(7)", "유플 ; 낫아웃- ; 4구", "2-0-0"], ["8", "좌", "문상구(39)", "삼진 ; 1내안,포일,포일 ; 삼진", "3-1-0"], ["9", "二", "강유민(16)", "삼진 ; 삼진", "2-0-0"]], "pit": "이성화(99) 승리 · 3⅔이닝 22타자 탈삼진 6 실점 5  /  정찬영(73) 홀드 · ⅓이닝 1타자 탈삼진 0 실점 0"}]};
+const A='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',TY=['s','x','h','o','e'];
+const P={};
+D.raw.split('\n').forEach(l=>{const f=l.split('|');P[f[0]]={nm:f[0],bt:f[1],G:+f[2],AVG:f[3],OBP:f[4],SLG:f[5],OPS:f[6],D:+f[7],T:+f[8],HR:+f[9],SB:+f[10],balls:[...(f[11]||'')].map(ch=>{const i=A.indexOf(ch);return{dir:Math.floor(i/20),depth:Math.floor((i%20)/5),t:TY[i%5]}})}});
+const POS={'중':'중견','우':'우익','좌':'좌익','三':'3루','一':'1루','二':'2루','유':'유격','투':'투수','포':'포수','미':'대타','지':'지명'};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>{const s=(+n).toFixed(3);return s.startsWith('0')?s.slice(1):s};
+const split=n=>{const m=String(n).match(/^(.+)\((\d+)\)$/);return m?[m[2],m[1]]:['',n]};
+const batsOf=bt=>{const m=(bt||'').match(/(우|좌|양)타/);return m?m[0]:''};
+const cx=80,cy=100,pt=(a,r)=>{const t=(a-90)*Math.PI/180;return[cx+r*Math.cos(t),cy+r*Math.sin(t)]};
+const arc=(a1,a2,r)=>{const[x1,y1]=pt(a1,r),[x2,y2]=pt(a2,r);return`M${cx} ${cy}L${x1.toFixed(1)} ${y1.toFixed(1)}A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}Z`};
+const seed=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h},rnd=x=>{const v=Math.sin(x)*10000;return v-Math.floor(v)};
+const shade=v=>v>=.5?'#27500A':v>=.3?'#639922':'#9cc46b';
+function fan(p){const b=p.balls,n=b.length||1,c=[0,0,0];b.forEach(x=>c[x.dir]++);const sd=seed(p.nm),k=b.length>50?.8:1;
+ let s=`<svg class="fan" viewBox="-6 -12 172 118" role="img" aria-label="${esc(p.nm)} 타구 분포"><title>타구 분포</title>`;
+ for(let i=0;i<3;i++)s+=`<path d="${arc(-45+i*30,-15+i*30,86)}" fill="${shade(c[i]/n)}" stroke="var(--card)" stroke-width="1.4"/>`;
+ s+=`<path d="${arc(-45,45,31)}" fill="#C2A27A"/>`;const[f1,f2]=[pt(-45,80),pt(45,80)];
+ s+=`<path d="M${f1[0].toFixed(1)} ${f1[1].toFixed(1)}A80 80 0 0 1 ${f2[0].toFixed(1)} ${f2[1].toFixed(1)}" fill="none" stroke="#fff" stroke-width="1.6"/>`;
+ const R={0:[12,28],1:[38,64],2:[66,77]};
+ const place=(x,i)=>{const a=-42.5+x.dir*30+rnd(sd+i*7.13)*25,rr=R[Math.min(x.depth,2)],r=rr[0]+rnd(sd+i*3.71+1)*(rr[1]-rr[0]);return pt(a,r)};
+ const dot=(t,f)=>b.forEach((x,i)=>{if(t.includes(x.t)){const[px,py]=place(x,i);s+=f(px.toFixed(1),py.toFixed(1))}});
+ dot('oe',(x,y)=>`<circle cx="${x}" cy="${y}" r="${(2.2*k).toFixed(1)}" fill="#fff" stroke="#5F5E5A" stroke-width=".8"/>`);
+ dot('s',(x,y)=>`<circle cx="${x}" cy="${y}" r="${(3*k).toFixed(1)}" fill="#FAC775" stroke="#633806" stroke-width=".7"/>`);
+ dot('x',(x,y)=>`<circle cx="${x}" cy="${y}" r="${(4.6*k).toFixed(1)}" fill="#378ADD" stroke="#042C53" stroke-width="1"/>`);
+ b.forEach((x,i)=>{if(x.t==='h'){const[px,py]=pt(-42.5+x.dir*30+rnd(sd+i*7.13)*25,89);s+=`<path transform="translate(${(px-7).toFixed(1)},${(py-7).toFixed(1)})" d="M7 0L9 4.8L14 5.2L10.2 8.4L11.4 13.6L7 10.8L2.6 13.6L3.8 8.4L0 5.2L5 4.8Z" fill="#E24B4A" stroke="#501313" stroke-width=".8"/>`}});
+ const lab=['좌','중','우'],mx=Math.max(...c);
+ for(let i=0;i<3;i++){const[tx,ty]=pt(-36+i*36,i===1?101:97),top=c[i]===mx&&b.length;s+=`<text x="${tx.toFixed(0)}" y="${(ty+(i===1?2:4)).toFixed(0)}" text-anchor="middle" font-size="${top?10:8.5}" font-weight="${top?700:500}" fill="${top?'var(--fantop)':'var(--sub)'}">${lab[i]} ${Math.round(c[i]/n*100)}%</text>`}
+ return s+'</svg>'}
+function tag(p){const b=p.balls,n=b.length;if(!n)return'타구 기록 없음';const c=[0,0,0];b.forEach(x=>c[x.dir]++);const sh=c.map(v=>v/n),bt=batsOf(p.bt);
+ const pull=bt==='우타'?sh[0]:bt==='좌타'?sh[2]:null,push=bt==='우타'?sh[2]:bt==='좌타'?sh[0]:null;
+ if(pull===null){const i=sh.indexOf(Math.max(...sh));return sh[i]>=.5?['좌측','중앙','우측'][i]+' 쏠림 '+Math.round(sh[i]*100)+'%':'전방향 분산'}
+ if(pull>=.5)return`당겨치기 ${Math.round(pull*100)}%`;if(push>=.5)return`밀어치기 ${Math.round(push*100)}%`;if(sh[1]>=.45)return'중앙 위주';return'전방향 분산'}
+function card(row,o){const p=P[row.nm];const[no,name]=split(row.nm);const bt=p?batsOf(p.bt):'';
+ const badge=o.kind==='start'?`<span class="ord" aria-label="${esc(row.o)}번 타자">${esc(row.o)}</span>`:o.kind==='sub'?`<span class="ord s">후보</span>`:'';
+ const head=`<div class="hd"><span class="who">${badge}<span class="no">(${esc(no)})</span>${esc(name)}<span class="ps">· ${esc(POS[row.pos]||row.pos||'')}</span></span><span class="bt${bt?'':' u'}">${bt||'타격 미확인'}${p?' · '+p.G+'G':''}</span></div>`;
+ if(!p)return`<article class="cd${o.kind==='sub'?' sub':''}">${head}<div class="note">26년 기록 없음</div></article>`;
+ const small=p.balls.length<10,single=p.balls.filter(x=>x.t==='s').length;
+ return`<article class="cd${o.lead?' lead':''}${o.kind==='sub'?' sub':''}">${head}${row.memo?`<div class="note" style="margin:2px 0 0">${esc(row.memo)}</div>`:''}
+ <div class="stt"><span><b>${fmt(p.AVG)}</b><i>타율</i></span><span><b>${fmt(p.OBP)}</b><i>출루율</i></span><span><b>${fmt(p.OPS)}</b><i>OPS</i></span><span><b>${p.SB}</b><i>도루</i></span></div>
+ ${fan(p)}<div class="ft"><span class="tag">${esc(tag(p))}${small?' · 표본 적음':''}</span><span><span style="color:var(--cs)">단타 ${single}</span> · <span style="color:var(--cx);font-weight:700">장타 ${p.D+p.T}</span> · <span style="color:var(--ch);font-weight:${p.HR?700:500}">홈런 ${p.HR}</span> · <span style="color:var(--sub)">타구 ${p.balls.length}</span></span></div></article>`}
+document.getElementById('sub').textContent=D.sub;document.getElementById('oppName').textContent=D.opp;document.getElementById('basis').textContent=D.basis;
+let start=0;const ST=D.starters||[];
+function render(){if(D.mode==='lineup'){const six=[];for(let i=0;i<6;i++)six.push(ST[(start+i)%ST.length]);
+  document.getElementById('main').innerHTML=six.map((r,i)=>card(r,{kind:'start',lead:i===0})).join('');
+  const t=`${D.inn} 수비 예상 타자 · ${ST[start].o}번부터`;document.getElementById('title').textContent=t;document.getElementById('mainHead').innerHTML=`다음 수비 이닝 예상 타자 <span class="cnt">◀ ▶ 로 시작 타순 이동</span>`}}
+if(D.mode==='lineup'){
+ const mv=d=>{start=(start+d+ST.length)%ST.length;render()};
+ document.getElementById('prev').addEventListener('click',()=>mv(-1));document.getElementById('next').addEventListener('click',()=>mv(1));
+ document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')mv(-1);if(e.key==='ArrowRight')mv(1)});
+ render();
+ document.getElementById('starters').innerHTML=ST.map(r=>card(r,{kind:'start'})).join('');
+ document.getElementById('subs').innerHTML=(D.subs||[]).map(r=>card(r,{kind:'sub'})).join('');document.getElementById('subCnt').textContent=(D.subs||[]).length+'명';
+}else{
+ document.getElementById('nav').style.display='none';document.getElementById('lineupBlock').style.display='none';
+ document.getElementById('title').textContent=D.title.replace(' 전력분석판','')+' · 라인업 발표 전';
+ document.getElementById('mainHead').innerHTML=`26년 타자 전체 <span class="cnt">게임원 타자기록 순 · ${D.roster.length}명</span>`;
+ document.getElementById('main').innerHTML=D.roster.map(r=>card(r,{kind:'pre'})).join('');
+}
+const outs=ip=>{const[a,b]=String(ip).split('.');return(+a)*3+(+b||0)};
+document.getElementById('pit').innerHTML=D.pit.map(p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/o*21).toFixed(1),tags=[],atk=[];
+ if(+bb7>=7){tags.push(['r','볼넷·사구 허용형']);atk.push('초구·유인구 참기, 볼카운트 유리할 때 공략','투구수 늘리기 — 출루 우선')}
+ if(+p.OAVG>=.32){tags.push(['y','피안타 허용형']);atk.push('스트라이크는 적극 타격, 연속 안타 노리기')}
+ if(+p.K7>=7){tags.push(['b','탈삼진형']);atk.push('2스트라이크 이후 짧게 컨택')}
+ if(p.HR>=3){tags.push(['r','피홈런 주의']);atk.push('실투는 놓치지 말고 강하게')}
+ if(!tags.length)tags.push(['g','제구 안정형']);
+ const ip=String(p.IP).replace(/\.1$/,' ⅓').replace(/\.2$/,' ⅔').replace(/\.0$/,'');
+ return`<article class="pc"><div class="hd"><span class="who"><span class="no">(${esc(no)})</span>${esc(name)}</span><span class="bt">${esc(p.role)}</span></div>
+ <div class="stt"><span><b>${p.ERA}</b><i>방어율</i></span><span><b>${p.WHIP}</b><i>WHIP</i></span><span><b>${fmt(p.OAVG)}</b><i>피안타율</i></span><span><b>${bb7}</b><i>4사구/7이닝</i></span><span><b>${p.K7}</b><i>탈삼진율</i></span></div>
+ <div class="note" style="margin:2px 0 4px">${p.G}경기 · ${ip}이닝 · 피안타 ${p.H} · 피홈런 ${p.HR} · 4사구 ${p.BB+p.HBP} · 탈삼진 ${p.SO}</div>
+ ${tags.map(t=>`<span class="pill ${t[0]}">${t[1]}</span>`).join('')}<ul class="atk">${[...new Set(atk)].map(a=>`<li>${esc(a)}</li>`).join('')}</ul></article>`}).join('');
+document.getElementById('h2h').innerHTML=D.h2h.map(g=>{const rc=g.result==='승'?'w':g.result==='패'?'l':'d';
+ const hd=g.line[0].map((h,i)=>i&&/^\d+$/.test(h)&&!g.line.slice(1).some(r=>r[i]!=='')?'':`<th>${esc(h)}</th>`).join('');
+ const keep=g.line[0].map((h,i)=>!(i&&/^\d+$/.test(h)&&!g.line.slice(1).some(r=>r[i]!=='')));
+ const rows=g.line.slice(1).map(r=>'<tr>'+r.map((c,i)=>keep[i]?`<td>${esc(c)}</td>`:'').join('')+'</tr>').join('');
+ return`<details><summary><span>${esc(g.date)} ${esc(g.place)} · ${esc(g.score)}<span class="res ${rc}">${esc(g.result)}</span></span></summary><div class="dt">
+ <div class="sb"><table><thead><tr>${hd}</tr></thead><tbody>${rows}</tbody></table></div>
+ <div class="scroll"><table class="bx"><thead><tr><th>타순</th><th>선수</th><th>타석 결과</th><th style="text-align:right">타수-안타-타점</th></tr></thead><tbody>
+ ${g.bat.map(b=>{const[no,name]=split(b[2]);return`<tr><td>${esc(b[0])} ${esc(POS[b[1]]||b[1])}</td><td><span class="no">(${esc(no)})</span> <b>${esc(name)}</b></td><td>${esc(b[3]).replace(/ ; /g,' · ')}</td><td class="n">${esc(b[4])}</td></tr>`}).join('')}</tbody></table></div>
+ <p class="note">상대 투수: ${esc(g.pit)}</p></div></details>`}).join('');
+}
+</script>
+</body>
+</html>
