@@ -70,10 +70,11 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 <main class="wrap">
   <div class="glinks" id="glinks"></div>
   <div class="seg" id="seg" role="group" aria-label="보기 전환"><button id="vbL" aria-pressed="true">라인업 기준</button><button id="vbF" aria-pressed="false">26년 전체 기록</button></div>
+  <div id="liveCtl"></div>
   <h2>상대 투수 · 공략 포인트</h2>
   <section id="pit" class="pgrid"></section>
 
-  <div id="vLineup"><div id="liveCtl"></div><h2 id="mainHead"></h2>
+  <div id="vLineup"><h2 id="mainHead"></h2>
   <section id="main" class="grid"></section>
   <div class="lg">
     <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#FAC775" stroke="#633806"/></svg> 단타</span>
@@ -95,7 +96,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <h2>26년 맞대결 <span class="cnt">눌러서 상세 보기</span></h2>
   <section id="h2h"></section>
 
-  <h2>스코어보드</h2>
+  <h2 id="sbHead">스코어보드</h2>
   <div id="sbBox"><div class="sb"><table><thead><tr><th>팀</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>R</th><th>H</th><th>B</th></tr></thead>
   <tbody><tr><td>글로베어스</td><td colspan="10" style="color:#c9e0c4">경기 시작 후 게임원 박스스코어 자동 반영(구현 예정)</td></tr><tr><td id="oppName"></td><td colspan="10"></td></tr></tbody></table></div></div>
   <div id="liveOpp"></div>
@@ -151,7 +152,7 @@ document.getElementById('glinks').innerHTML=(D.links||[]).map(l=>`<a href="${esc
  const curG=G.find(g=>g.href===here&&g.md);btn.innerHTML=curG?`${esc(curG.md)} ${esc(curG.wd)}${curG.vn?`<span class="vn ${curG.vn==='고'?'go2':'jung'}">${esc(curG.vn)}</span>`:' '}${esc(curG.label)} ▾`:'경기 선택 ▾';
  btn.addEventListener('click',e=>{e.stopPropagation();pl.hidden=!pl.hidden;btn.setAttribute('aria-expanded',!pl.hidden)});document.addEventListener('click',e=>{if(!pl.contains(e.target)){pl.hidden=true;btn.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(e.key==='Escape')pl.hidden=true})}document.getElementById('oppName').textContent=D.opp;document.getElementById('basis').textContent=D.basis;
 let start=0;const ST=D.starters||[];
-const LV=D.live;let LS=0,adj=0;const LEAD=[1];
+const LV=D.live;let LS=LV&&LV.start!=null?LV.start:0,adj=0;const LEAD=[1];
 const paCount=c=>(c||'').split('/').filter(p=>p.split(',').map(x=>x.trim()).some(x=>x&&!/^(대타|대수비|대주자)$/.test(x))).length;
 const firstInn=r=>{const i=r.slice(3).findIndex(c=>c);return i<0?99:i+1};
 if(LV){for(let k=1;k<=LV.innings;k++){const cnt={};for(let o=1;o<=9;o++)cnt[o]=LV.opp.filter(r=>+r[0]===o).reduce((a,r)=>a+paCount(r[2+k]),0);let rem=Object.values(cnt).reduce((a,b)=>a+b,0),pos=LEAD[k-1],last=pos,guard=0;while(rem>0&&guard++<99){if(cnt[pos]>0){cnt[pos]--;rem--;last=pos}pos=pos%9+1}LEAD[k]=last%9+1}}
@@ -161,10 +162,10 @@ const sbHtml=()=>{const n=LV.innings,fin=LS>=2*n;let us=0,op=0;const cell=(v,sho
  const ur=LV.line.us.map((v,i)=>{const sh=LS>=2*i+1;if(sh)us+=+v;return cell(v,sh,LS===2*i+1)}).join(''),orr=LV.line.opp.map((v,i)=>{const sh=LS>=2*i+2;if(sh)op+=+v;return cell(v,sh,LS===2*i+2)}).join('');
  const tot=(a,r)=>fin?a.slice(1).map((x,i)=>`<td class="tot${i===0?' first':''}">${esc(x)}</td>`).join(''):`<td class="tot first">${r}</td><td class="tot">·</td><td class="tot">·</td>`;
  return`<div class="sb"><table><thead><tr><th>팀</th>${[...Array(n)].map((_,i)=>`<th>${i+1}</th>`).join('')}<th class="tot first">득점</th><th class="tot">안타</th><th class="tot">4사구</th></tr></thead><tbody><tr><td>글로베어스</td>${ur}${fin?`<td class="tot first">${esc(LV.line.usTot[0])}</td><td class="tot">${esc(LV.line.usTot[1])}</td><td class="tot">${esc(LV.line.usTot[3])}</td>`:tot(null,us)}</tr><tr><td>${esc(D.opp)}</td>${orr}${fin?`<td class="tot first">${esc(LV.line.oppTot[0])}</td><td class="tot">${esc(LV.line.oppTot[1])}</td><td class="tot">${esc(LV.line.oppTot[3])}</td>`:tot(null,op)}</tr></tbody></table><div class="st2">기준: ${half(LS)}${fin?' · 경기 종료':''} · 실제 경기에서는 게임원 박스스코어를 주기적으로 읽어 자동 갱신</div></div>`};
-const liveOppHtml=()=>{const n=LV.innings;return`<h3 class="sh">${esc(D.opp)} 타석 기록(진행 중)</h3><div class="scroll"><table class="bx"><thead><tr><th>타순</th><th>선수</th>${[...Array(n)].map((_,i)=>`<th>${i+1}회</th>`).join('')}</tr></thead><tbody>${LV.opp.map(r=>{const[no,name]=split(r[2]);if(LV.opp.find(x=>x[0]===r[0])!==r&&LS<2*firstInn(r))return'';return`<tr><td>${esc(r[0])} ${esc(POS[r[1]]||r[1])}</td><td><span class="no">${esc(no)}</span> <b>${esc(name)}</b></td>${[...Array(n)].map((_,i)=>`<td>${LS>=2*i+2?esc(r[3+i]||'').replace(/\//g,' / '):''}</td>`).join('')}</tr>`}).join('')}</tbody></table></div>`};
+const liveOppHtml=()=>{const n=LV.innings;return`<div class="scroll"><table class="bx"><thead><tr><th>타순</th><th>선수</th>${[...Array(n)].map((_,i)=>`<th>${i+1}회</th>`).join('')}</tr></thead><tbody>${LV.opp.map(r=>{const[no,name]=split(r[2]);if(LV.opp.find(x=>x[0]===r[0])!==r&&LS<2*firstInn(r))return'';return`<tr><td>${esc(r[0])} ${esc(POS[r[1]]||r[1])}</td><td><span class="no">${esc(no)}</span> <b>${esc(name)}</b></td>${[...Array(n)].map((_,i)=>`<td>${LS>=2*i+2?esc(r[3+i]||'').replace(/\//g,' / '):''}</td>`).join('')}</tr>`}).join('')}</tbody></table></div>`};
 const liveAll=()=>{document.getElementById('sbBox').innerHTML=sbHtml();document.getElementById('liveOpp').innerHTML=liveOppHtml();document.querySelectorAll('#tl button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.s===LS))};
 if(LV){document.getElementById('liveCtl').innerHTML=`<div class="lc"><div class="lt"><b>샘플 진행 시점</b> — 시점을 누르면 스코어보드와 다음 수비 이닝 타자가 실제 경기 흐름대로 바뀝니다</div><div class="tl" id="tl">${[...Array(2*LV.innings+1)].map((_,s)=>`<button data-s="${s}">${half(s)}</button>`).join('')}</div></div>`;
- document.getElementById('tl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;LS=+b.dataset.s;adj=0;render();liveAll()})}
+ document.getElementById('tl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;LS=+b.dataset.s;adj=0;render();liveAll()});document.querySelector('#liveCtl .lc').appendChild(document.getElementById('sbBox'));document.getElementById('sbBox').style.marginTop='10px';const h=document.getElementById('sbHead');if(h)h.textContent=D.opp+' 타석 기록 (진행 중)'}
 function render(){if(D.mode==='lineup'){if(LV){const m=Math.min(Math.floor(LS/2),LV.innings);start=((LEAD[m]-1+adj)%9+9)%9}const six=[];for(let i=0;i<6;i++){const s=ST[(start+i)%ST.length];if(LV){const r=occ(+s.o,Math.floor(LS/2));six.push({o:s.o,pos:r[1],nm:r[2]})}else six.push(s)}
   document.getElementById('main').innerHTML=six.map((r,i)=>card(r,{kind:'start',lead:i===0})).join('');
   const inn=LV?(LS>=2*LV.innings?'경기 종료 · 다음':`${Math.floor(LS/2)+1}회말`):D.inn;const t=`${inn} 수비 예상 타자 · ${ST[start].o}번부터`;document.getElementById('title').textContent=t;document.getElementById('mainHead').innerHTML=`다음 수비 이닝 예상 타자 <span class="cnt">◀ ▶ 로 시작 타순 이동</span>`}}
@@ -183,7 +184,7 @@ const show=v=>{document.getElementById('vLineup').hidden=v!=='L';document.getEle
 if(D.mode==='lineup'){document.getElementById('vbL').addEventListener('click',()=>show('L'));document.getElementById('vbF').addEventListener('click',()=>show('F'));show('L')}
 else{document.getElementById('seg').hidden=true;show('F')}
 const outs=ip=>{const[a,b]=String(ip).split('.');return(+a)*3+(+b||0)};
-document.getElementById('pit').innerHTML=D.pit.map(p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/o*21).toFixed(1),tags=[],atk=[];
+const pcard=p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/o*21).toFixed(1),tags=[],atk=[];
  if(+bb7>=7){tags.push(['r','볼넷·사구 허용형']);atk.push('초구·유인구 참기, 볼카운트 유리할 때 공략','투구수 늘리기 — 출루 우선')}
  if(+p.OAVG>=.32){tags.push(['y','피안타 허용형']);atk.push('스트라이크는 적극 타격, 연속 안타 노리기')}
  if(+p.K7>=7){tags.push(['b','탈삼진형']);atk.push('2스트라이크 이후 짧게 컨택')}
@@ -193,7 +194,7 @@ document.getElementById('pit').innerHTML=D.pit.map(p=>{const[no,name]=split(p.nm
  return`<article class="pc"><div class="hd"><span class="who"><span class="no">${esc(no)}</span><span class="nmx">${esc(name)}</span></span><span class="bt">${esc(p.role)}</span></div>
  <div class="stt"><span><b>${p.ERA}</b><i>방어율</i></span><span><b>${p.WHIP}</b><i>WHIP</i></span><span><b>${fmt(p.OAVG)}</b><i>피안타율</i></span><span><b>${bb7}</b><i>4사구/7이닝</i></span><span><b>${p.K7}</b><i>탈삼진율</i></span></div>
  <div class="note" style="margin:2px 0 4px">${p.G}경기 · ${ip}이닝 · 피안타 ${p.H} · 피홈런 ${p.HR} · 4사구 ${p.BB+p.HBP} · 탈삼진 ${p.SO}</div>
- ${tags.map(t=>`<span class="pill ${t[0]}">${t[1]}</span>`).join('')}<ul class="atk">${[...new Set(atk)].map(a=>`<li>${esc(a)}</li>`).join('')}</ul></article>`}).join('');
+ ${tags.map(t=>`<span class="pill ${t[0]}">${t[1]}</span>`).join('')}<ul class="atk">${[...new Set(atk)].map(a=>`<li>${esc(a)}</li>`).join('')}</ul></article>`};const PM=4;document.getElementById('pit').innerHTML=D.pit.slice(0,PM).map(pcard).join('')+(D.pit.length>PM?`<details class="more" style="grid-column:1/-1"><summary>투수 ${D.pit.length-PM}명 더 보기</summary><div class="pgrid" style="padding:0 10px 10px">${D.pit.slice(PM).map(pcard).join('')}</div></details>`:'');
 const batT=(rows,label)=>`<h3 class="sh">${label}</h3><div class="scroll"><table class="bx"><thead><tr><th>타순</th><th>선수</th><th>타석 결과</th><th style="text-align:right">타수-안타-타점</th></tr></thead><tbody>${rows.map(b=>{const[no,name]=split(b[2]);return`<tr><td>${esc(b[0])} ${esc(POS[b[1]]||b[1])}</td><td><span class="no">${esc(no)}</span> <b>${esc(name)}</b></td><td>${esc(b[3]||'').replace(/ ; /g,' · ')}</td><td class="n">${esc(b[4])}</td></tr>`}).join('')}</tbody></table></div>`;
 const pitT=(rows,label)=>`<h3 class="sh">${label}</h3><div class="scroll"><table class="bx"><thead><tr><th>투수</th><th>결과</th><th style="text-align:right">이닝</th><th style="text-align:right">타자</th><th style="text-align:right">피안타</th><th style="text-align:right">4사구</th><th style="text-align:right">탈삼진</th><th style="text-align:right">실점</th></tr></thead><tbody>${rows.map(p=>{const[no,name]=split(p[0]);return`<tr><td><span class="no">${esc(no)}</span> <b>${esc(name)}</b></td><td>${esc(p[1]==='-'?'':p[1])}</td><td class="n">${esc(p[2]).replace(' ⅓','⅓').replace(' ⅔','⅔').replace(/^0⅓$/,'⅓')}</td><td class="n">${esc(p[3])}</td><td class="n">${esc(p[4])}</td><td class="n">${(+p[5])+(+p[6])}</td><td class="n">${esc(p[7])}</td><td class="n">${esc(p[8])}</td></tr>`}).join('')}</tbody></table></div>`;
 document.getElementById('h2h').innerHTML=(D.h2h||[]).length?D.h2h.map(g=>{const rc=g.result==='승'?'w':g.result==='패'?'l':'d';
