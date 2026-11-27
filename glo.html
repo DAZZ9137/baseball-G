@@ -66,6 +66,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 .pill.n{background:light-dark(#ecefe9,#2a3a2f);color:var(--sub)}.stt.x8{grid-template-columns:repeat(8,1fr);margin-top:0}.stt.x8 b{font-size:14.5px}.stt.x8 i{font-size:10.5px}.stt.x5{margin-top:0}.stt.x5 b{font-size:15px}.stt.x5 i{font-size:10.5px}.stt small{font-size:11px;font-weight:500;color:var(--sub)}
 .yseg{display:inline-flex;margin:10px 2px 0;border:1px solid var(--line);border-radius:999px;overflow:hidden}.yseg button{min-height:40px;padding:0 16px;border:0;background:var(--card);color:var(--ink);font:inherit;font-weight:500}.yseg button[aria-pressed=true]{background:#27500A;color:#fff}.yseg button:disabled{color:var(--sub);opacity:.75}
 @media(max-width:640px){.mid{grid-template-columns:1fr 1fr;row-gap:0}.mid>div:nth-child(2){grid-column:1/-1;grid-row:2}.mid .side{flex-direction:row;justify-content:center;align-items:baseline;gap:6px}.mid .side br{display:none}.mid .fan{max-width:none}}
+@media(min-width:641px){.mid .side{align-self:end;padding-bottom:34px}}
 </style>
 </head>
 <body>
@@ -79,7 +80,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <div id="liveCtl"></div>
   <h2 id="pitHead">상대 투수 · 공략 포인트</h2>
   <section id="pit" class="pgrid"></section>
-  <p class="note" style="margin:6px 2px 0">성향 태그는 5이닝 이상 던진 투수만 판정 · <b>방어율</b> 7이닝당 자책점 · <b>WHIP</b> 이닝당 출루 허용(피안타+볼넷) · <b>4사구/7이닝</b> 7이닝당 볼넷+몸에 맞는 공 · <b>탈삼진율</b> 7이닝당 삼진 · <b>이닝당 투구</b> 1이닝 평균 투구수</p>
+  <p class="note" style="margin:6px 2px 0">성향 태그는 5이닝 이상 던진 투수만 판정 · <b>방어율</b> 7이닝당 자책점 · <b>WHIP</b> 이닝당 출루 허용(피안타+볼넷) · <b>4사구/7이닝</b> 7이닝당 볼넷+몸에 맞는 공 · <b>탈삼진율</b> 7이닝당 삼진 · <b>이닝당 투구</b> 1이닝 평균 투구수(투구수 기록이 빠진 경우 -)</p>
 
   <div id="vLineup"><h2 id="mainHead"></h2>
   <section id="main" class="grid"></section>
@@ -198,7 +199,7 @@ const pcard=p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/
  if(+p.K7>=10.5){tags.push(['b','탈삼진형']);atk.push('2스트라이크 이후 짧게 컨택')}
  if(p.HR>=3){tags.push(['r','피홈런 주의']);atk.push('실투는 놓치지 말고 강하게')}
  if(!tags.length)tags.push(['n','리그 평균 수준'])}
- const ex=(D.pext||{})[p.nm];const exRow=ex?`<div class="stt x5"><span><b>${ex[0]}-${ex[1]}-${ex[2]}</b><i>승-패-세</i></span><span><b>${ex[4]}</b><i>상대 타자</i></span><span><b>${ex[6]}</b><i>투구수</i></span><span><b>${o?(ex[6]/(o/3)).toFixed(1):'-'}</b><i>이닝당 투구</i></span><span><b>${ex[7]}<small>(${ex[8]})</small></b><i>실점(자책)</i></span></div>`:'';
+ const ex=(D.pext||{})[p.nm];const npOk=ex&&+ex[6]>=2.5*(+ex[4])&&+ex[6]>0;const exRow=ex?`<div class="stt x5"><span><b>${ex[0]}-${ex[1]}-${ex[2]}</b><i>승-패-세</i></span><span><b>${ex[4]}</b><i>상대 타자</i></span><span><b>${npOk?ex[6]:'-'}</b><i>투구수</i></span><span><b>${npOk&&o?(ex[6]/(o/3)).toFixed(1):'-'}</b><i>이닝당 투구</i></span><span><b>${ex[7]}<small>(${ex[8]})</small></b><i>실점(자책)</i></span></div>`:'';
  const ip=String(p.IP).replace(/\.1$/,' ⅓').replace(/\.2$/,' ⅔').replace(/\.0$/,'');
  return`<article class="pc"><div class="hd"><span class="who"><span class="no">${esc(no)}</span><span class="nmx">${esc(name)}</span></span><span class="bt">${esc(p.role).replace("('26)",'<span class="yr">(\'26)</span>')}</span></div>
  <div class="stt"><span><b>${p.ERA}</b><i>방어율</i></span><span><b>${p.WHIP}</b><i>WHIP</i></span><span><b>${fmt(p.OAVG)}</b><i>피안타율</i></span><span><b>${bb7}</b><i>4사구/7이닝</i></span><span><b>${p.K7}</b><i>탈삼진율</i></span></div>${exRow}
