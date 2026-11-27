@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#14361d"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <title>스웨인즈 전력분석판</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -65,7 +65,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 <body>
 <header class="top">
   <div><h1 id="title"></h1><div class="st" id="sub"></div></div>
-  <div class="nav"><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 자동</button><a class="home" href="index.html">⌂ 경기 목록</a><select id="pick" aria-label="경기 선택"></select><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
+  <div class="nav"><button class="thm" id="fsb" aria-label="전체화면 전환">⤢ 전체화면</button><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 자동</button><a class="home" href="index.html">⌂ 경기 목록</a><select id="pick" aria-label="경기 선택"></select><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
 </header>
 <main class="wrap">
   <div class="glinks" id="glinks"></div>
@@ -188,6 +188,7 @@ document.getElementById('h2h').innerHTML=(D.h2h||[]).length?D.h2h.map(g=>{const 
  ${pitT(g.pitch,D.opp+' 투수')}${batT(g.bat,D.opp+' 타자')}${g.ourpitch?pitT(g.ourpitch,'글로베어스 투수'):''}${g.ourbat?batT(g.ourbat,'글로베어스 타자'):''}</div></details>`}).join(''):`<div class="pc note" style="margin:0">2026년 맞대결 기록이 없습니다.</div>`;
 }
 {const K='glo-theme',b=document.getElementById('thm'),L={auto:'화면: 자동',light:'화면: 밝게',dark:'화면: 어둡게'},N={auto:'light',light:'dark',dark:'auto'};const ap=v=>{if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='auto';try{v=localStorage.getItem(K)||'auto'}catch(e){}if(!L[v])v='auto';ap(v);if(b)b.addEventListener('click',()=>{v=N[v];try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
+{const fb=document.getElementById('fsb');if(fb){const up=()=>{fb.textContent=document.fullscreenElement?'⤢ 전체화면 해제':'⤢ 전체화면'};fb.addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen({navigationUI:'hide'})}catch(e){fb.textContent='전체화면 미지원'}});document.addEventListener('fullscreenchange',up);if(window.matchMedia('(display-mode: fullscreen)').matches)fb.style.display='none'}}
 </script>
 </body>
 </html>

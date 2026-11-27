@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#14361d"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <title>글로베어스 2027 일정</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +17,7 @@ td.dt .wd{color:var(--sub);font-weight:500}.gk{display:inline-grid;place-items:c
 tr.next td{background:light-dark(#f3f9ec,#1f3424)}.k{font-size:13px;color:var(--sub);margin:10px 2px}
 .sample{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:inherit;text-decoration:none}.sample span{color:var(--sub);font-size:14px}
 </style></head><body>
-<header><div><h1>글로베어스 2027 경기 일정 · 상대 전력분석</h1><p>서울 성남고리그 토요리그(C조) · 다가오는 경기 순</p></div><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 자동</button></header>
+<header><div><h1>글로베어스 2027 경기 일정 · 상대 전력분석</h1><p>서울 성남고리그 토요리그(C조) · 다가오는 경기 순</p></div><div style="margin-left:auto;display:flex;gap:8px"><button class="thm" id="fsb" style="margin:0" aria-label="전체화면 전환">⤢ 전체화면</button><button class="thm" id="thm" style="margin:0" aria-label="화면 밝기 전환">화면: 자동</button></div></header>
 <main>
 <div class="gl"><a href="https://www.gameone.kr/club/?club_idx=25486" target="_blank" rel="noopener"><b>게임원</b>우리 팀 ↗</a><a href="https://www.gameone.kr/club/info/schedule/table?club_idx=25486&season=2027" target="_blank" rel="noopener"><b>게임원</b>2027 일정 ↗</a><a href="https://www.gameone.kr/league/?lig_idx=10894" target="_blank" rel="noopener"><b>게임원</b>리그 홈 ↗</a></div>
 <div class="wrap"><table><thead><tr><th>일시</th><th>구장</th><th>게임</th><th>전력분석</th></tr></thead><tbody>
@@ -38,5 +38,6 @@ tr.next td{background:light-dark(#f3f9ec,#1f3424)}.k{font-size:13px;color:var(--
 <a class="sample" href="sample.html"><div><b>샘플 · 라인업 반영 화면</b><br><span>팀 사야이 26.10.10 실제 라인업으로 만든 경기 당일 화면 예시</span></div><span>열기 ›</span></a>
 </main>
 <script>{const r=[...document.querySelectorAll('tbody tr')];const now=new Date();const y=2027;let first=null;for(const tr of r){if(!tr.dataset.m)continue;const d=new Date(y,+tr.dataset.m-1,+tr.dataset.d,23,59);if(d>=now&&!first){first=tr}else if(d<now){tr.style.opacity='.55'}}if(first)first.classList.add('next')}
-{const K='glo-theme',b=document.getElementById('thm'),L={auto:'화면: 자동',light:'화면: 밝게',dark:'화면: 어둡게'},N={auto:'light',light:'dark',dark:'auto'};const ap=v=>{if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='auto';try{v=localStorage.getItem(K)||'auto'}catch(e){}if(!L[v])v='auto';ap(v);if(b)b.addEventListener('click',()=>{v=N[v];try{localStorage.setItem(K,v)}catch(e){}ap(v)})}</script>
+{const K='glo-theme',b=document.getElementById('thm'),L={auto:'화면: 자동',light:'화면: 밝게',dark:'화면: 어둡게'},N={auto:'light',light:'dark',dark:'auto'};const ap=v=>{if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='auto';try{v=localStorage.getItem(K)||'auto'}catch(e){}if(!L[v])v='auto';ap(v);if(b)b.addEventListener('click',()=>{v=N[v];try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
+{const fb=document.getElementById('fsb');if(fb){const up=()=>{fb.textContent=document.fullscreenElement?'⤢ 전체화면 해제':'⤢ 전체화면'};fb.addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen({navigationUI:'hide'})}catch(e){fb.textContent='전체화면 미지원'}});document.addEventListener('fullscreenchange',up);if(window.matchMedia('(display-mode: fullscreen)').matches)fb.style.display='none'}}</script>
 </body></html>
