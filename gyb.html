@@ -84,13 +84,17 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 .gnext{display:flex;align-items:center;gap:8px;min-height:50px;padding:0 14px;border-radius:12px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-size:16px;white-space:nowrap;overflow:hidden;min-width:0}.gnext[hidden]{display:none}.gnext b{font-weight:700}.gnext .op{overflow:hidden;text-overflow:ellipsis}.gnext .gl{font-size:12px;color:#d3e6cf;border:1px solid #5d8a63;border-radius:999px;padding:2px 8px}.gnext .cv{margin-left:auto;font-size:22px;color:#fac775}
 .gbar .pkl{left:0;right:auto;width:min(560px,94vw)}
 @media(max-width:640px){.gsel,.gnext{font-size:14.5px;padding:0 10px;gap:6px}.gsel .gl,.gnext .gl,.gsel .tm,.gnext .tm{display:none}}.gsel .vn,.gnext .vn,.gsel b:first-of-type,.gnext b:first-of-type{flex-shrink:0}
+.top{grid-template-columns:auto minmax(0,1fr) auto auto!important}
+.top .hl{display:flex;gap:6px}.top .hl a{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:70px;height:44px;padding:0 10px;border-radius:10px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-size:13.5px;font-weight:700;line-height:1.15;white-space:nowrap}.top .hl a::before{content:'게임원';color:#fac775;font-weight:500;font-size:10.5px}
+@media(max-width:900px){.gsel .gl,.gnext .gl{display:none}.top .hl{grid-column:1/-1;grid-row:2}.top .hl a{flex:1}.top .gbar{grid-row:3}}
+.yseg{margin-top:4px!important}
 </style>
 </head>
 <body>
 <header class="top">
   <a class="ib" href="index.html" aria-label="경기 목록으로">⌂</a>
   <div class="tt"><h1 id="title"></h1><div class="st" id="sub"></div></div>
-  <div class="tools"><button class="ib" id="thm" aria-label="화면 밝기 전환">☀</button><button class="ib" id="fsb" aria-label="전체화면 전환">⤢</button></div>
+  <div class="hl" id="hl"></div><div class="tools"><button class="ib" id="thm" aria-label="화면 밝기 전환">☀</button><button class="ib" id="fsb" aria-label="전체화면 전환">⤢</button></div>
   <div class="gbar"><div class="pk"><button class="gsel" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><a class="gnext" id="gnext" hidden></a></div>
 </header>
 <main class="wrap">
@@ -173,7 +177,7 @@ function card(row,o){const p=P[row.nm]||PBN[String(row.nm).replace(/\(.*\)/,'')]
  ${(()=>{const tg=p.balls.length?tag(p):'타구 분포 없음',m=tg.match(/^(.*?)\s*(\d+%)$/);const left=`<div class="side"><b class="tg">${esc(m?m[1]:tg).replace(/ /g,'<br>')}</b>${m?`<b class="pc2">${esc(m[2])}</b>`:''}${small?'<span class="smp">표본 적음</span>':''}</div>`;const right=`<div class="side"><span class="sl">도루</span><b class="big${p.SB>=15?' hot':''}">${p.SB}</b></div>`;const mid=p.balls.length?fan(p):`<div class="note" style="text-align:center;padding:26px 4px;border:1px dashed var(--line);border-radius:8px;margin:6px 0">${esc(D.noSpray||'방향 확인 타구 없음')}</div>`;return`<div class="mid">${left}<div>${mid}</div>${right}</div>`})()}
  <div class="ft c"><span style="color:var(--ch);font-weight:${p.HR?700:500}">홈런 ${p.HR}</span> · <span style="color:var(--cx);font-weight:700">장타 ${p.D+p.T}</span>${p.balls.length?` · <span style="color:var(--cs)">단타 ${single}</span> · <span style="color:var(--sub)">아웃 ${outs}</span>`:''}</div>${p.balls.length?`<div class="note" style="margin:1px 0 0;text-align:center">방향 확인 타구 ${p.balls.length}개 기준(삼진·볼넷 제외)</div>`:''}</article>`}
 document.getElementById('sub').textContent=D.sub;
-document.getElementById('glinks').innerHTML=(D.links||[]).map(l=>`<a href="${esc(l.href)}" target="_blank" rel="noopener"><b>게임원</b>${esc(l.label)} ↗</a>`).join('');
+document.getElementById('hl').innerHTML=(D.links||[]).map(l=>`<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');document.getElementById('glinks').style.display='none';
 {const here=location.pathname.split('/').pop()||'index.html',G=D.games||[],btn=document.getElementById('pkb'),pl=document.getElementById('pkl');const now=Date.now(),done=g=>g.ts&&Date.parse(g.ts)+4*3600e3<now;
  const gm=G.filter(g=>g.md),up=gm.filter(g=>!done(g)),past=gm.filter(done).reverse(),links=G.filter(g=>!g.md);let curG=up.find(g=>g.href===here)||past.find(g=>g.href===here);
  const it=(g,cls)=>`<a href="${esc(g.href)}" class="${cls}${g===curG?' cur':''}"><span class="md">${esc(g.md)}</span><span class="wd">${esc(g.wd)}</span>${g.vn?`<span class="vn ${g.vn==='고'?'go2':'jung'}">${esc(g.vn)}</span>`:'<span></span>'}<span class="op">${esc(g.label)}</span></a>`;
@@ -288,12 +292,12 @@ function draw(){const st=$('fst');const tx=lastOk?`마지막 확인 ${lastOk.toL
  if(!autoL){autoL=true;showF('L')}}
 const showF=v=>{show(v);if(v==='L')draw()};
 async function tick(){if(busy)return;busy=true;try{S=parse(await get());lastOk=new Date();lastErr=''}catch(e){lastErr=e.message}busy=false;draw()}
-$('liveCtl').innerHTML=`<div class="lc"><div class="lt" id="fst"></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px"><button class="thm" id="fnow" style="margin:0">↻ 지금 새로고침</button><a class="thm" style="margin:0;display:inline-flex;align-items:center;text-decoration:none" href="${GO+path}" target="_blank" rel="noopener">게임원 박스스코어 ↗</a></div><div id="curP" style="margin-top:8px;font-size:15px"></div></div>`;
+$('liveCtl').innerHTML=`<div class="lc"><div style="display:flex;align-items:center;gap:10px"><div class="lt" id="fst" style="flex:1;margin:0"></div><button class="ib" id="fnow" title="지금 새로고침" aria-label="지금 새로고침" style="flex-shrink:0">↻</button></div><div id="curP" style="margin-top:8px;font-size:15px"></div></div>`;
 $('liveCtl').querySelector('.lc').appendChild($('sbBox'));$('sbBox').style.marginTop='10px';$('sbHead').textContent=D.opp+' 타석 기록 (게임원 실시간)';
 $('fnow').addEventListener('click',tick);$('seg').hidden=false;$('vbL').addEventListener('click',()=>showF('L'));$('vbF').addEventListener('click',()=>showF('F'));
 $('prev').addEventListener('click',()=>{adj--;draw()});$('next').addEventListener('click',()=>{adj++;draw()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
-draw();tick();setInterval(tick,30000)})()}
+$('sbBox').innerHTML=`<div class="sb"><table><thead><tr><th>팀</th>${[1,2,3,4,5,6,7].map(i=>`<th>${i}</th>`).join('')}<th class="tot first">득점</th><th class="tot">안타</th><th class="tot">실책</th><th class="tot">4사구</th></tr></thead><tbody><tr><td>${esc(F.usName)}</td><td colspan="11" style="color:#c9e0c4">게임원 박스스코어 확인 중…</td></tr><tr><td>${esc(D.opp)}</td><td colspan="11"></td></tr></tbody></table></div>`;draw();tick();setInterval(tick,30000)})()}
 
 }
 {const K='glo-theme',b=document.getElementById('thm'),L={light:'☀',dark:'☾'};const ap=v=>{document.documentElement.dataset.theme=v;if(b){b.textContent=L[v];b.title=v==='light'?'밝은 화면 (누르면 어둡게)':'어두운 화면 (누르면 밝게)'}};let v='light';try{v=localStorage.getItem(K)||'light'}catch(e){}if(!L[v])v='light';ap(v);if(b)b.addEventListener('click',()=>{v=v==='light'?'dark':'light';try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
