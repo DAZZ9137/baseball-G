@@ -13,7 +13,7 @@
    PICTURE: 녹색 부채꼴 경기장의 타구(단타 노랑·장타 파랑·홈런 빨강)
    COLOUR/TYPE: 전광판 딥그린, 잔디 3단계, Noto Sans KR
    LAYOUT: 고정 바 → 투수 → 타자 카드 → 선발/후보 → 맞대결 → 스코어보드 */
-:root{color-scheme:light dark;--bg:light-dark(#dfe6da,#080d0a);--card:light-dark(#fff,#1c2b21);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--line:light-dark(#c9d3c2,#3b5243);--chip:light-dark(#eef3ea,#223128);--fantop:light-dark(#27500A,#b5e07e);--cs:light-dark(#8a5a0b,#FAC775);--cx:light-dark(#185FA5,#8cc0f2);--ch:light-dark(#c62828,#ff9a9a);--board:#14361d;--stb:light-dark(#dfe7d8,#0c140f);--cell:light-dark(#f6f9f3,#26362b);--warn:light-dark(#a15c00,#ffc861)}
+:root{color-scheme:light dark;--bg:light-dark(#dfe6da,#0b100d);--card:light-dark(#fff,#24362a);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--line:light-dark(#c9d3c2,#4d6a55);--chip:light-dark(#eef3ea,#2c4033);--fantop:light-dark(#27500A,#b5e07e);--cs:light-dark(#8a5a0b,#FAC775);--cx:light-dark(#185FA5,#8cc0f2);--ch:light-dark(#c62828,#ff9a9a);--board:#14361d;--stb:light-dark(#dfe7d8,#182419);--cell:light-dark(#f6f9f3,#30463a);--warn:light-dark(#a15c00,#ffc861)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
@@ -99,6 +99,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 .lh{display:flex;gap:6px;align-items:center}
 body.self .olg{border-radius:8px}
 .prole{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:#27500A;border-radius:6px;padding:2px 8px;margin-bottom:6px}
+:root[data-theme=dark] .cd,:root[data-theme=dark] .pc,:root[data-theme=dark] .lc{box-shadow:0 0 0 1px #4d6a55,0 6px 16px rgba(0,0,0,.45)}
 </style>
 </head>
 <body>
