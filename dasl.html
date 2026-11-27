@@ -72,7 +72,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 <body>
 <header class="top">
   <div><h1 id="title"></h1><div class="st" id="sub"></div></div>
-  <div class="nav"><button class="thm" id="fsb" aria-label="전체화면 전환">⤢ 전체화면</button><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 자동</button><a class="home" href="index.html">⌂ 경기 목록</a><div class="pk"><button class="thm" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
+  <div class="nav"><button class="thm" id="fsb" aria-label="전체화면 전환">⤢ 전체화면</button><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 밝게</button><a class="home" href="index.html">⌂ 경기 목록</a><div class="pk"><button class="thm" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
 </header>
 <main class="wrap">
   <div class="glinks" id="glinks"></div>
@@ -273,7 +273,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
 draw();tick();setInterval(tick,30000)})()}
 
 }
-{const K='glo-theme',b=document.getElementById('thm'),L={auto:'화면: 자동',light:'화면: 밝게',dark:'화면: 어둡게'},N={auto:'light',light:'dark',dark:'auto'};const ap=v=>{if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='auto';try{v=localStorage.getItem(K)||'auto'}catch(e){}if(!L[v])v='auto';ap(v);if(b)b.addEventListener('click',()=>{v=N[v];try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
+{const K='glo-theme',b=document.getElementById('thm'),L={light:'화면: 밝게',dark:'화면: 어둡게'};const ap=v=>{document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='light';try{v=localStorage.getItem(K)||'light'}catch(e){}if(!L[v])v='light';ap(v);if(b)b.addEventListener('click',()=>{v=v==='light'?'dark':'light';try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
+
 {const fb=document.getElementById('fsb');if(fb){const up=()=>{fb.textContent=document.fullscreenElement?'⤢ 전체화면 해제':'⤢ 전체화면'};fb.addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen({navigationUI:'hide'})}catch(e){fb.textContent='전체화면 미지원'}});document.addEventListener('fullscreenchange',up);if(window.matchMedia('(display-mode: fullscreen)').matches)fb.style.display='none'}}
 </script>
 </body>
