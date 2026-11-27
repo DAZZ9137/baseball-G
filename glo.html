@@ -88,6 +88,12 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 .top .hl{display:flex;gap:6px}.top .hl a{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:70px;height:44px;padding:0 10px;border-radius:10px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-size:13.5px;font-weight:700;line-height:1.15;white-space:nowrap}.top .hl a::before{content:'게임원';color:#fac775;font-weight:500;font-size:10.5px}
 @media(max-width:900px){.gsel .gl,.gnext .gl{display:none}.top .hl{grid-column:1/-1;grid-row:2}.top .hl a{flex:1}.top .gbar{grid-row:3}}
 .yseg{margin-top:4px!important}
+.gbar{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr)!important}
+.gprev .cv{margin-left:0;margin-right:2px}.gbar .pkl{left:50%;transform:translateX(-50%)}
+.gnext .gl{font-size:11px;padding:1px 6px}
+@media(max-width:1100px){.gnext .gl,.gnext .tm{display:none}}
+@media(max-width:640px){.gnext .vn,.gnext .op{display:none}.gnext{justify-content:center}.gbar{grid-template-columns:minmax(0,.8fr) minmax(0,2fr) minmax(0,.8fr)!important}}
+.gnone{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:12px;border:1px dashed #5d8a63;color:#a9c6a4;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -95,7 +101,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <a class="ib" href="index.html" aria-label="경기 목록으로">⌂</a>
   <div class="tt"><h1 id="title"></h1><div class="st" id="sub"></div></div>
   <div class="hl" id="hl"></div><div class="tools"><button class="ib" id="thm" aria-label="화면 밝기 전환">☀</button><button class="ib" id="fsb" aria-label="전체화면 전환">⤢</button></div>
-  <div class="gbar"><div class="pk"><button class="gsel" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><a class="gnext" id="gnext" hidden></a></div>
+  <div class="gbar"><a class="gnext gprev" id="gprev" hidden></a><div class="pk"><button class="gsel" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><a class="gnext" id="gnext" hidden></a></div>
 </header>
 <main class="wrap">
   <div class="glinks" id="glinks"></div>
@@ -188,7 +194,8 @@ document.getElementById('hl').innerHTML=(D.links||[]).map(l=>`<a href="${esc(l.h
  const gm=G.filter(g=>g.md),up=gm.filter(g=>!done(g)),past=gm.filter(done).reverse(),links=G.filter(g=>!g.md);let curG=up.find(g=>g.href===here)||past.find(g=>g.href===here);
  const it=(g,cls)=>`<a href="${esc(g.href)}" class="${cls}${g===curG?' cur':''}"><span class="md">${esc(g.md)}</span><span class="wd">${esc(g.wd)}</span>${g.vn?`<span class="vn ${g.vn==='고'?'go2':'jung'}">${esc(g.vn)}</span>`:'<span></span>'}<span class="op">${esc(g.label)}</span></a>`;
  pl.innerHTML=`<a class="wide" href="index.html">⌂ 2027 경기 일정 전체</a><div class="ph">다가올 경기</div>${up.map(g=>it(g,'')).join('')||'<div class="ph">없음</div>'}${past.length?`<div class="ph">끝난 경기</div>${past.map(g=>it(g,'past')).join('')}`:''}<div class="sep"></div>${links.filter(g=>g.href!=='index.html').map(g=>`<a class="wide${g.href===here?' cur':''}" href="${esc(g.href)}">${esc(g.label)}</a>`).join('')}`;
- const nx=curG?gm.slice(gm.indexOf(curG)+1).find(g=>g.href!==curG.href):up[0],ne=document.getElementById('gnext');if(nx){ne.href=nx.href;ne.innerHTML=`<span class="gl">${curG?'다음 경기':'다가올 경기'}</span><b>${esc(nx.md)}<span class="tm"> ${esc(nx.wd)}</span></b>${nx.vn?`<span class="vn ${nx.vn==='고'?'go2':'jung'}">${esc(nx.vn)}</span>`:''}<b class="op">${esc(nx.label)}</b><span class="cv">›</span>`;ne.hidden=false}
+ const pv=curG?gm.slice(0,gm.indexOf(curG)).reverse().find(g=>g.href!==curG.href):past[0],pe=document.getElementById('gprev');if(pv){pe.href=pv.href;pe.innerHTML=`<span class="cv">‹</span><span class="gl">${curG?'이전 경기':'최근 경기'}</span><b>${esc(pv.md)}<span class="tm"> ${esc(pv.wd)}</span></b>${pv.vn?`<span class="vn ${pv.vn==='고'?'go2':'jung'}">${esc(pv.vn)}</span>`:''}<b class="op">${esc(pv.label)}</b>`;pe.hidden=false}else pe.outerHTML=curG?'<span class="gnone">시즌 첫 경기</span>':'<span></span>';
+ const nx=curG?gm.slice(gm.indexOf(curG)+1).find(g=>g.href!==curG.href):up[0],ne=document.getElementById('gnext');if(!nx&&curG){ne.outerHTML='<span class="gnone">시즌 마지막 경기</span>'}if(nx){ne.href=nx.href;ne.innerHTML=`<span class="gl">${curG?'다음 경기':'다가올 경기'}</span><b>${esc(nx.md)}<span class="tm"> ${esc(nx.wd)}</span></b>${nx.vn?`<span class="vn ${nx.vn==='고'?'go2':'jung'}">${esc(nx.vn)}</span>`:''}<b class="op">${esc(nx.label)}</b><span class="cv">›</span>`;ne.hidden=false}
  const curL=links.find(g=>g.href===here);btn.innerHTML=`<span class="gl">경기 선택</span>`+(curG?`<b>${esc(curG.md)}<span class="tm"> ${esc(curG.wd)}</span></b>${curG.vn?`<span class="vn ${curG.vn==='고'?'go2':'jung'}">${esc(curG.vn)}</span>`:''}<b>${esc(curG.label)}</b>${done(curG)?'<span class="gl">끝난 경기</span>':''}`:`<b>${esc(curL?curL.label:'')}</b>`)+'<span class="cv">▾</span>';
  btn.addEventListener('click',e=>{e.stopPropagation();pl.hidden=!pl.hidden;btn.setAttribute('aria-expanded',!pl.hidden)});document.addEventListener('click',e=>{if(!pl.contains(e.target)){pl.hidden=true;btn.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',e=>{if(e.key==='Escape')pl.hidden=true})}document.getElementById('oppName').textContent=D.opp;document.getElementById('basis').textContent=D.basis;
 let start=0;const ST=D.starters||[];
