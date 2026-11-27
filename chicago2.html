@@ -126,7 +126,7 @@ const arc=(a1,a2,r)=>{const[x1,y1]=pt(a1,r),[x2,y2]=pt(a2,r);return`M${cx} ${cy}
 const seed=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h},rnd=x=>{const v=Math.sin(x)*10000;return v-Math.floor(v)};
 const shade=v=>v>=.5?'#27500A':v>=.3?'#639922':'#9cc46b';
 function fan(p){const b=p.balls,n=b.length||1,c=[0,0,0];b.forEach(x=>c[x.dir]++);const sd=seed(p.nm),k=b.length>50?.8:1;
- let s=`<svg class="fan" viewBox="-30 -30 220 136" role="img" aria-label="${esc(p.nm)} 타구 분포"><title>타구 분포</title>`;
+ let s=`<svg class="fan" viewBox="-20 -32 200 138" role="img" aria-label="${esc(p.nm)} 타구 분포"><title>타구 분포</title>`;
  for(let i=0;i<3;i++)s+=`<path d="${arc(-45+i*30,-15+i*30,86)}" fill="${shade(c[i]/n)}" stroke="var(--card)" stroke-width="1.4"/>`;
  s+=`<path d="${arc(-45,45,31)}" fill="#C2A27A"/>`;const[f1,f2]=[pt(-45,80),pt(45,80)];
  s+=`<path d="M${f1[0].toFixed(1)} ${f1[1].toFixed(1)}A80 80 0 0 1 ${f2[0].toFixed(1)} ${f2[1].toFixed(1)}" fill="none" stroke="#fff" stroke-width="1.6"/>`;
@@ -138,7 +138,7 @@ function fan(p){const b=p.balls,n=b.length||1,c=[0,0,0];b.forEach(x=>c[x.dir]++)
  dot('x',(x,y)=>`<circle cx="${x}" cy="${y}" r="${(4.6*k).toFixed(1)}" fill="#378ADD" stroke="#042C53" stroke-width="1"/>`);
  b.forEach((x,i)=>{if(x.t==='h'){const[px,py]=pt(-42.5+x.dir*30+rnd(sd+i*7.13)*25,89);s+=`<path transform="translate(${(px-7).toFixed(1)},${(py-7).toFixed(1)})" d="M7 0L9 4.8L14 5.2L10.2 8.4L11.4 13.6L7 10.8L2.6 13.6L3.8 8.4L0 5.2L5 4.8Z" fill="#E24B4A" stroke="#501313" stroke-width=".8"/>`}});
  const lab=['좌','중','우'],mx=Math.max(...c);
- for(let i=0;i<3;i++){const[tx,ty]=i===1?pt(0,108):pt(i?62:-62,98),top=c[i]===mx&&b.length;s+=`<text x="${tx.toFixed(0)}" y="${(ty+(i===1?2:4)).toFixed(0)}" text-anchor="middle" font-size="${top?14:12}" font-weight="${top?700:500}" fill="${top?'var(--fantop)':'var(--sub)'}">${lab[i]} ${Math.round(c[i]/n*100)}%</text>`}
+ for(let i=0;i<3;i++){const[tx,ty]=i===1?pt(0,110):pt(i?40:-40,114),top=c[i]===mx&&b.length;s+=`<text x="${tx.toFixed(0)}" y="${(ty+(i===1?2:4)).toFixed(0)}" text-anchor="middle" font-size="${top?14:12}" font-weight="${top?700:500}" fill="${top?'var(--fantop)':'var(--sub)'}">${lab[i]} ${Math.round(c[i]/n*100)}%</text>`}
  return s+'</svg>'}
 function tag(p){const b=p.balls,n=b.length;if(!n)return'타구 기록 없음';const c=[0,0,0];b.forEach(x=>c[x.dir]++);const sh=c.map(v=>v/n);if(sh[0]>=.5)return`좌익 ${Math.round(sh[0]*100)}%`;if(sh[2]>=.5)return`우익 ${Math.round(sh[2]*100)}%`;if(sh[1]>=.45)return`중견 ${Math.round(sh[1]*100)}%`;return'분산'}
 const PBN={};Object.values(P).forEach(p=>{const b=String(p.nm).replace(/\(.*\)/,'');PBN[b]=PBN[b]===undefined?p:null});
