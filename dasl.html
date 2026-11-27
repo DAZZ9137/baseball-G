@@ -79,7 +79,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <div id="liveCtl"></div>
   <h2 id="pitHead">상대 투수 · 공략 포인트</h2>
   <section id="pit" class="pgrid"></section>
-  <p class="note" style="margin:6px 2px 0">성향 태그 기준 — 5이닝 이상 투수만 판정 · 2026 게임원 11개 팀 투수 41명 분포의 상·하위 약 1/3: 4사구/7이닝 11.0 이상 볼넷·사구 허용형, 6.2 이하 제구 안정형 · 피안타율 .380 이상 허용형, .290 이하 억제형 · 탈삼진율(7이닝당) 10.5 이상 탈삼진형 · 피홈런 3개 이상 주의</p>
+  <p class="note" style="margin:6px 2px 0">성향 태그는 5이닝 이상 던진 투수만 판정 · <b>방어율</b> 7이닝당 자책점 · <b>WHIP</b> 이닝당 출루 허용(피안타+볼넷) · <b>4사구/7이닝</b> 7이닝당 볼넷+몸에 맞는 공 · <b>탈삼진율</b> 7이닝당 삼진 · <b>이닝당 투구</b> 1이닝 평균 투구수</p>
 
   <div id="vLineup"><h2 id="mainHead"></h2>
   <section id="main" class="grid"></section>
@@ -96,9 +96,10 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
     <section id="starters" class="grid"></section>
     <h2>후보 · 교체 선수 <span class="cnt" id="subCnt"></span></h2>
     <section id="subs" class="grid"></section>
+  <p class="note" style="margin:6px 2px 0"><b>출루율</b> 타석 중 안타·볼넷·몸에 맞는 공으로 나간 비율 · <b>장타율</b> 타수당 루타 수 · <b>OPS</b> 출루율+장타율, 타격 종합 지표(1.000 이상이면 최상위) · <b>BB/K</b> 볼넷÷삼진, 1.0 이상이면 선구안 좋음 · <b>4사구</b> 볼넷+몸에 맞는 공</p>
   </div>
   </div>
-  <div id="vFull" hidden><h2 id="fullHead"></h2><section id="full" class="grid"></section></div>
+  <div id="vFull" hidden><h2 id="fullHead"></h2><section id="full" class="grid"></section><p class="note" style="margin:6px 2px 0"><b>출루율</b> 타석 중 안타·볼넷·몸에 맞는 공으로 나간 비율 · <b>장타율</b> 타수당 루타 수 · <b>OPS</b> 출루율+장타율, 타격 종합 지표(1.000 이상이면 최상위) · <b>BB/K</b> 볼넷÷삼진, 1.0 이상이면 선구안 좋음 · <b>4사구</b> 볼넷+몸에 맞는 공</p></div>
 
   <h2 id="h2hHead">26년 맞대결 <span class="cnt">눌러서 상세 보기</span></h2>
   <section id="h2h"></section>
@@ -107,8 +108,8 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <div id="sbBox"><div class="sb"><table><thead><tr><th>팀</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>R</th><th>H</th><th>B</th></tr></thead>
   <tbody><tr><td>글로베어스</td><td colspan="10" style="color:#c9e0c4">경기 시작 후 게임원 박스스코어 자동 반영(구현 예정)</td></tr><tr><td id="oppName"></td><td colspan="10"></td></tr></tbody></table></div></div>
   <div id="liveOpp"></div>
+  <p class="note">타구 점은 방향(좌·중·우)과 깊이(내야·외야·펜스 앞·펜스 밖)만 기록 기준이며, 구역 안 세부 위치는 자동 배치입니다. 삼진·볼넷·사구는 제외.</p>
   <p class="note" id="basis"></p>
-  <p class="note">타구 점은 방향(좌·중·우)과 깊이(내야·외야·펜스 앞·펜스 밖)만 기록 기준이며, 구역 안 세부 위치는 자동 배치입니다. 삼진·볼넷·사구는 제외, 유격수 방향은 좌·2루수 방향은 우로 분류. 성적은 게임원 공식 기록. 투수 탈삼진율·4사구율은 게임원 기준 7이닝 환산.</p>
 </main>
 <script>
 {
