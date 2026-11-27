@@ -281,7 +281,7 @@ if(w)PX.push({n:'전용 서버',u:()=>w.replace(/\/$/,'')+'/?p='+encodeURICompon
 PX.push({n:'공개 중계 A',u:()=>'https://api.allorigins.win/raw?url='+encodeURIComponent(GO+path+'&t='+Date.now())});
 PX.push({n:'공개 중계 B',u:()=>'https://corsproxy.io/?url='+encodeURIComponent(GO+path+'&t='+Date.now())});
 let pxi=0,S=null,adj=0,lastStart=-1,lastOk=null,lastErr='',autoL=false,busy=false;
-const get=async()=>{let err='';for(let k=0;k<PX.length;k++){const i=(pxi+k)%PX.length;const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),12000);
+const get=async()=>{let err='';for(let k=0;k<PX.length;k++){const i=(pxi+k)%PX.length;const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),25000);
  try{const r=await fetch(PX[i].u(),{signal:ac.signal,cache:'no-store'});clearTimeout(tm);if(!r.ok)throw new Error('HTTP '+r.status);const t=await r.text();if(!/score_teble/.test(t))throw new Error('박스스코어 아님');pxi=i;return t}catch(e){clearTimeout(tm);err=PX[i].n+': '+(e.name==='AbortError'?'시간 초과':e.message)}}throw new Error(err)};
 const cellTxt=td=>td.innerHTML.split(/<br\s*\/?>/i).map(s=>s.replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim()).filter(Boolean).join('/');
 const lab=tb=>{let n=tb;for(let k=0;k<6&&n;k++){n=n.previousElementSibling||n.parentElement;if(n&&n.tagName==='H3')return n.textContent.trim()}return''};
