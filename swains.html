@@ -13,15 +13,15 @@
    PICTURE: 녹색 부채꼴 경기장의 타구(단타 노랑·장타 파랑·홈런 빨강)
    COLOUR/TYPE: 전광판 딥그린, 잔디 3단계, Noto Sans KR
    LAYOUT: 고정 바 → 투수 → 타자 카드 → 선발/후보 → 맞대결 → 스코어보드 */
-:root{color-scheme:light dark;--bg:light-dark(#eef2ea,#0f1712);--card:light-dark(#fff,#18241c);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--line:light-dark(#d6ddd0,#33463a);--chip:light-dark(#eef3ea,#223128);--fantop:light-dark(#27500A,#b5e07e);--cs:light-dark(#8a5a0b,#FAC775);--cx:light-dark(#185FA5,#8cc0f2);--ch:light-dark(#c62828,#ff9a9a);--board:#14361d;--stb:light-dark(#dfe7d8,#0c140f);--cell:light-dark(#f6f9f3,#26362b);--warn:light-dark(#a15c00,#ffc861)}
+:root{color-scheme:light dark;--bg:light-dark(#dfe6da,#080d0a);--card:light-dark(#fff,#1c2b21);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--line:light-dark(#c9d3c2,#3b5243);--chip:light-dark(#eef3ea,#223128);--fantop:light-dark(#27500A,#b5e07e);--cs:light-dark(#8a5a0b,#FAC775);--cx:light-dark(#185FA5,#8cc0f2);--ch:light-dark(#c62828,#ff9a9a);--board:#14361d;--stb:light-dark(#dfe7d8,#0c140f);--cell:light-dark(#f6f9f3,#26362b);--warn:light-dark(#a15c00,#ffc861)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
-*{box-sizing:border-box;min-width:0}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
 .top{position:sticky;top:0;z-index:5;background:var(--board);color:#f4f9f1;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;padding:8px max(2vw,12px)}
 .top h1{font-size:20px;margin:0;font-weight:700}.top .st{font-size:13px;color:#d3e6cf}
 .nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.home{display:inline-flex;align-items:center;height:42px;padding:0 12px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-weight:500}#pick{height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font:inherit;padding:0 8px;max-width:46vw}.nav button{min-width:48px;height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font-size:18px;cursor:pointer}
 .nav button:focus-visible,summary:focus-visible{outline:3px solid #fac775}
-.wrap{padding:10px max(2vw,12px) 28px}
+.wrap{padding:10px max(2vw,12px) 28px}.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 2px 0}.seg button{min-height:44px;padding:0 18px;border:0;background:var(--card);color:var(--sub);font:inherit;font-weight:500;cursor:pointer}.seg button[aria-pressed=true]{background:#27500A;color:#fff;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -67,10 +67,11 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
   <div class="nav"><a class="home" href="index.html">⌂ 경기 목록</a><select id="pick" aria-label="경기 선택"></select><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
 </header>
 <main class="wrap">
+  <div class="seg" id="seg" role="group" aria-label="보기 전환"><button id="vbL" aria-pressed="true">라인업 기준</button><button id="vbF" aria-pressed="false">26년 전체 기록</button></div>
   <h2>상대 투수 · 공략 포인트</h2>
   <section id="pit" class="pgrid"></section>
 
-  <h2 id="mainHead"></h2>
+  <div id="vLineup"><h2 id="mainHead"></h2>
   <section id="main" class="grid"></section>
   <div class="lg">
     <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#FAC775" stroke="#633806"/></svg> 단타</span>
@@ -86,6 +87,8 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
     <h2>후보 · 교체 선수 <span class="cnt" id="subCnt"></span></h2>
     <section id="subs" class="grid"></section>
   </div>
+  </div>
+  <div id="vFull" hidden><h2 id="fullHead"></h2><section id="full" class="grid"></section></div>
 
   <h2>26년 맞대결 <span class="cnt">눌러서 상세 보기</span></h2>
   <section id="h2h"></section>
@@ -98,7 +101,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 </main>
 <script>
 {
-const D={"title": "스웨인즈 전력분석판", "mode": "pre", "inn": "1회말", "opp": "스웨인즈", "sub": "스웨인즈 · 27.01.16(토) 14:00 성남고 · 상대 라인업 발표 전 · 26 타자기록 순 전체 표시", "basis": "데이터: 게임원 2026 스웨인즈 13경기(전부 성남고 C조 · 타 리그 없음) · 성적은 팀 기록통계 공식값 · 2026.11.27 수집", "raw": "이상훈(32)|우투우타|6|1.000|1.000|1.000|2.000|0|0|0|2|Z\n이성화(99)|우투우타|7|0.667|0.786|0.667|1.452|0|0|0|6|rtAoA\n오명송(3)|우투우타|10|0.615|0.645|0.731|1.376|1|1|0|19|ZAoFAAAEcrrDFFzAsDtAfcF\n이선민(55)|우투우타|11|0.583|0.688|0.917|1.604|3|1|1|9|FDALFcLFIZLrrEFLRF\n양문성(64)|우투우타|1|0.500|0.667|0.500|1.167|0|0|0|2|DZ\n이정호(12)|우투우타|10|0.474|0.655|0.632|1.287|1|1|0|11|XLLFZZFtF\n박세용(2)|우투우타|10|0.429|0.600|0.619|1.219|2|1|0|10|DDEFZLADDZDrLLAD\n손승범(13)|우투우타|13|0.379|0.472|0.448|0.920|2|0|0|8|IZDFDZEDIILDDtoDcXrfFtI\n천종현(17)|우투우타|11|0.379|0.424|0.552|0.976|1|2|0|6|DDfzAZFDDrFrFccrwXLEstrD\n황수환(14)|우투우타|11|0.375|0.515|0.417|0.932|1|0|0|9|EXAsAcEfrAFFFIIrZ\n문상구(39)|좌투좌타|11|0.250|0.444|0.350|0.794|0|1|0|3|ozrosr\n정찬영(73)||4|0.250|0.250|0.250|0.500|0|0|0|0|DDFt\n강유민(16)|우투우타|7|0.222|0.588|0.222|0.810|0|0|0|4|FD\n오영호(7)|우투우타|13|0.208|0.406|0.250|0.656|1|0|0|5|DLDIDFrU", "roster": [{"o": "", "pos": "미", "nm": "이상훈(32)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전"}, {"o": "", "pos": "투", "nm": "이성화(99)", "memo": "주 타순 8번(4회) · 최근 5경기 3회 출전"}, {"o": "", "pos": "유", "nm": "오명송(3)", "memo": "주 타순 1번(4회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "一", "nm": "이선민(55)", "memo": "주 타순 4번(10회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "좌", "nm": "양문성(64)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전"}, {"o": "", "pos": "三", "nm": "이정호(12)", "memo": "주 타순 5번(5회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "중", "nm": "박세용(2)", "memo": "주 타순 3번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "우", "nm": "손승범(13)", "memo": "주 타순 5번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "유", "nm": "천종현(17)", "memo": "주 타순 1번(7회) · 최근 5경기 3회 출전"}, {"o": "", "pos": "二", "nm": "황수환(14)", "memo": "주 타순 2번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "좌", "nm": "문상구(39)", "memo": "주 타순 6번(4회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "투", "nm": "정찬영(73)", "memo": "주 타순 8번(2회) · 최근 5경기 2회 출전"}, {"o": "", "pos": "二", "nm": "강유민(16)", "memo": "주 타순 8번(4회) · 최근 5경기 2회 출전"}, {"o": "", "pos": "포", "nm": "오영호(7)", "memo": "주 타순 9번(9회) · 최근 5경기 5회 출전"}], "pit": [{"nm": "이성화(99)", "role": "26 선발 8회", "ERA": "5.82", "G": 11, "IP": "27.2", "H": 34, "HR": 0, "BB": 39, "HBP": 6, "SO": 35, "WHIP": "2.64", "OAVG": "0.288", "K7": "8.86"}, {"nm": "정찬영(73)", "role": "26 선발 5회", "ERA": "6.13", "G": 10, "IP": "24.0", "H": 35, "HR": 3, "BB": 14, "HBP": 12, "SO": 18, "WHIP": "2.04", "OAVG": "0.333", "K7": "5.25"}], "h2h": [{"date": "26.04.18", "place": "성남중", "score": "글로 5 : 8 스웨인즈", "result": "패", "line": [["팀", "1", "2", "3", "4", "5", "6", "7", "R", "H", "E", "B"], ["글로베어스", "0", "0", "5", "0", "", "", "", "5", "6", "7", "5"], ["스웨인즈", "3", "2", "0", "3", "", "", "", "8", "13", "5", "1"]], "bat": [["1", "지", "이선민(55)", "좌선2 ; 좌안", "2-2-0"], ["1", "투", "정찬영(73)", "대수비 ; 삼진", "1-0-0"], ["2", "중", "천종현(17)", "우월3 ; 유내안 ; 중안,도루", "3-3-1"], ["3", "유", "오명송(3)", "좌안,포구실책,도루,송구실책 ; 유내안,도루 ; 유내안,도루", "3-3-1"], ["4", "一", "박세용(2)", "삼진 ; 유실,송구실책,도루 ; 좌안,포구실책", "3-1-4"], ["5", "三", "황수환(14)", "유내안,도루자 ; 낫아웃- ; 1실,포구실책,도루", "3-1-0"], ["6", "우", "손승범(13)", "중안,도루 ; 유플 ; 좌안,도루", "3-2-0"], ["7", "포", "오영호(7)", "유플 ; 낫아웃- ; 4구", "2-0-0"], ["8", "좌", "문상구(39)", "삼진 ; 1내안,포일,포일 ; 삼진", "3-1-0"], ["9", "二", "강유민(16)", "삼진 ; 삼진", "2-0-0"]], "pitch": [["이성화(99)", "승", "3⅔", "22", "6", "5"], ["정찬영(73)", "홀드", "⅓", "1", "0", "0"]]}], "games": [{"href": "swains.html", "label": "01.16 스웨인즈"}, {"href": "sayai.html", "label": "시범 · 팀 사야이"}]};
+const D={"title": "스웨인즈 전력분석판", "mode": "pre", "inn": "1회말", "opp": "스웨인즈", "sub": "스웨인즈 · 27.01.16(토) 14:00 성남고 · 상대 라인업 발표 전 · 26 타자기록 순 전체 표시", "basis": "데이터: 게임원 2026 스웨인즈 13경기(전부 성남고 C조 · 타 리그 없음) · 성적은 팀 기록통계 공식값 · 2026.11.27 수집", "raw": "이상훈(32)|우투우타|6|1.000|1.000|1.000|2.000|0|0|0|2|Z\n이성화(99)|우투우타|7|0.667|0.786|0.667|1.452|0|0|0|6|rtAoA\n오명송(3)|우투우타|10|0.615|0.645|0.731|1.376|1|1|0|19|ZAoFAAAEcrrDFFzAsDtAfcF\n이선민(55)|우투우타|11|0.583|0.688|0.917|1.604|3|1|1|9|FDALFcLFIZLrrEFLRF\n양문성(64)|우투우타|1|0.500|0.667|0.500|1.167|0|0|0|2|DZ\n이정호(12)|우투우타|10|0.474|0.655|0.632|1.287|1|1|0|11|XLLFZZFtF\n박세용(2)|우투우타|10|0.429|0.600|0.619|1.219|2|1|0|10|DDEFZLADDZDrLLAD\n손승범(13)|우투우타|13|0.379|0.472|0.448|0.920|2|0|0|8|IZDFDZEDIILDDtoDcXrfFtI\n천종현(17)|우투우타|11|0.379|0.424|0.552|0.976|1|2|0|6|DDfzAZFDDrFrFccrwXLEstrD\n황수환(14)|우투우타|11|0.375|0.515|0.417|0.932|1|0|0|9|EXAsAcEfrAFFFIIrZ\n문상구(39)|좌투좌타|11|0.250|0.444|0.350|0.794|0|1|0|3|ozrosr\n정찬영(73)||4|0.250|0.250|0.250|0.500|0|0|0|0|DDFt\n강유민(16)|우투우타|7|0.222|0.588|0.222|0.810|0|0|0|4|FD\n오영호(7)|우투우타|13|0.208|0.406|0.250|0.656|1|0|0|5|DLDIDFrU", "roster": [{"o": "", "pos": "미", "nm": "이상훈(32)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전"}, {"o": "", "pos": "투", "nm": "이성화(99)", "memo": "주 타순 8번(4회) · 최근 5경기 3회 출전"}, {"o": "", "pos": "유", "nm": "오명송(3)", "memo": "주 타순 1번(4회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "一", "nm": "이선민(55)", "memo": "주 타순 4번(10회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "좌", "nm": "양문성(64)", "memo": "주 타순 2번(1회) · 최근 5경기 0회 출전"}, {"o": "", "pos": "三", "nm": "이정호(12)", "memo": "주 타순 5번(5회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "중", "nm": "박세용(2)", "memo": "주 타순 3번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "우", "nm": "손승범(13)", "memo": "주 타순 5번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "유", "nm": "천종현(17)", "memo": "주 타순 1번(7회) · 최근 5경기 3회 출전"}, {"o": "", "pos": "二", "nm": "황수환(14)", "memo": "주 타순 2번(6회) · 최근 5경기 5회 출전"}, {"o": "", "pos": "좌", "nm": "문상구(39)", "memo": "주 타순 6번(4회) · 최근 5경기 4회 출전"}, {"o": "", "pos": "투", "nm": "정찬영(73)", "memo": "주 타순 8번(2회) · 최근 5경기 2회 출전"}, {"o": "", "pos": "二", "nm": "강유민(16)", "memo": "주 타순 8번(4회) · 최근 5경기 2회 출전"}, {"o": "", "pos": "포", "nm": "오영호(7)", "memo": "주 타순 9번(9회) · 최근 5경기 5회 출전"}], "pit": [{"nm": "이성화(99)", "role": "26 선발 8회", "ERA": "5.82", "G": 11, "IP": "27.2", "H": 34, "HR": 0, "BB": 39, "HBP": 6, "SO": 35, "WHIP": "2.64", "OAVG": "0.288", "K7": "8.86"}, {"nm": "정찬영(73)", "role": "26 선발 5회", "ERA": "6.13", "G": 10, "IP": "24.0", "H": 35, "HR": 3, "BB": 14, "HBP": 12, "SO": 18, "WHIP": "2.04", "OAVG": "0.333", "K7": "5.25"}], "h2h": [{"date": "26.04.18", "place": "성남중", "score": "글로 5 : 8 스웨인즈", "result": "패", "line": [["팀", "1", "2", "3", "4", "5", "6", "7", "R", "H", "E", "B"], ["글로베어스", "0", "0", "5", "0", "", "", "", "5", "6", "7", "5"], ["스웨인즈", "3", "2", "0", "3", "", "", "", "8", "13", "5", "1"]], "bat": [["1", "지", "이선민(55)", "좌선2 ; 좌안", "2-2-0"], ["1", "투", "정찬영(73)", "대수비 ; 삼진", "1-0-0"], ["2", "중", "천종현(17)", "우월3 ; 유내안 ; 중안,도루", "3-3-1"], ["3", "유", "오명송(3)", "좌안,포구실책,도루,송구실책 ; 유내안,도루 ; 유내안,도루", "3-3-1"], ["4", "一", "박세용(2)", "삼진 ; 유실,송구실책,도루 ; 좌안,포구실책", "3-1-4"], ["5", "三", "황수환(14)", "유내안,도루자 ; 낫아웃- ; 1실,포구실책,도루", "3-1-0"], ["6", "우", "손승범(13)", "중안,도루 ; 유플 ; 좌안,도루", "3-2-0"], ["7", "포", "오영호(7)", "유플 ; 낫아웃- ; 4구", "2-0-0"], ["8", "좌", "문상구(39)", "삼진 ; 1내안,포일,포일 ; 삼진", "3-1-0"], ["9", "二", "강유민(16)", "삼진 ; 삼진", "2-0-0"]], "pitch": [["이성화(99)", "승", "3⅔", "22", "6", "5"], ["정찬영(73)", "홀드", "⅓", "1", "0", "0"]]}], "games": [{"href": "swains.html", "label": "01.16 스웨인즈"}, {"href": "sayai.html", "label": "샘플 · 라인업 반영 화면"}]};
 const A='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',TY=['s','x','h','o','e'];
 const P={};
 D.raw.split('\n').forEach(l=>{const f=l.split('|');P[f[0]]={nm:f[0],bt:f[1],G:+f[2],AVG:f[3],OBP:f[4],SLG:f[5],OPS:f[6],D:+f[7],T:+f[8],HR:+f[9],SB:+f[10],balls:[...(f[11]||'')].map(ch=>{const i=A.indexOf(ch);return{dir:Math.floor(i/20),depth:Math.floor((i%20)/5),t:TY[i%5]}})}});
@@ -133,7 +136,7 @@ function tag(p){const b=p.balls,n=b.length;if(!n)return'타구 기록 없음';co
 function card(row,o){const p=P[row.nm];const[no,name]=split(row.nm);const bt=p?batsOf(p.bt):'';
  const badge=o.kind==='start'?`<span class="ord" aria-label="${esc(row.o)}번 타자">${esc(row.o)}</span>`:o.kind==='sub'?`<span class="ord s">후보</span>`:'';
  const head=`<div class="hd"><span class="who">${badge}<span class="no">${esc(no)}</span><span class="nmx">${esc(name)}</span><span class="ps">· ${esc(POS[row.pos]||row.pos||'')}</span></span><span class="bt${bt?'':' u'}">${bt||'타격 미확인'}${p?' · '+p.G+'G':''}</span></div>`;
- if(!p)return`<article class="cd${o.kind==='sub'?' sub':''}">${head}<div class="note">26년 기록 없음</div></article>`;
+ if(!p)return`<article class="cd${o.kind==='sub'?' sub':''}">${head}<div class="note">${esc(row.memo||'26년 기록 없음')}</div></article>`;
  const small=p.balls.length<10,single=p.balls.filter(x=>x.t==='s').length,outs=p.balls.filter(x=>x.t==='o'||x.t==='e').length;
  return`<article class="cd${o.lead?' lead':''}${o.kind==='sub'?' sub':''}">${head}${row.memo?`<div class="note" style="margin:2px 0 0">${esc(row.memo)}</div>`:''}
  <div class="stt"><span><b>${fmt(p.AVG)}</b><i>타율</i></span><span><b>${fmt(p.OBP)}</b><i>출루율</i></span><span><b>${fmt(p.OPS)}</b><i>OPS</i></span><span><b>${p.SB}</b><i>도루</i></span></div>
@@ -151,12 +154,13 @@ if(D.mode==='lineup'){
  render();
  document.getElementById('starters').innerHTML=ST.map(r=>card(r,{kind:'start'})).join('');
  document.getElementById('subs').innerHTML=(D.subs||[]).map(r=>card(r,{kind:'sub'})).join('');document.getElementById('subCnt').textContent=(D.subs||[]).length+'명';
-}else{
- document.getElementById('nav').style.display='none';document.getElementById('lineupBlock').style.display='none';
- document.getElementById('title').textContent=D.title.replace(' 전력분석판','')+' · 라인업 발표 전';
- document.getElementById('mainHead').innerHTML=`26년 타자 전체 <span class="cnt">게임원 타자기록 순 · ${D.roster.length}명</span>`;
- document.getElementById('main').innerHTML=D.roster.map(r=>card(r,{kind:'pre'})).join('');
 }
+const fullHtml=()=>{document.getElementById('fullHead').innerHTML=`26년 타자 전체 <span class="cnt">게임원 타자기록 순 · ${(D.roster||[]).length}명</span>`;document.getElementById('full').innerHTML=(D.roster||[]).map(r=>card(r,{kind:'pre'})).join('')};
+fullHtml();
+const show=v=>{document.getElementById('vLineup').hidden=v!=='L';document.getElementById('vFull').hidden=v!=='F';document.getElementById('vbL').setAttribute('aria-pressed',v==='L');document.getElementById('vbF').setAttribute('aria-pressed',v==='F');document.getElementById('nav').style.display=v==='L'?'flex':'none';
+ document.getElementById('title').textContent=v==='L'?`${D.inn} 수비 예상 타자 · ${ST[start].o}번부터`:D.opp+' · '+(D.mode==='lineup'?'26년 전체 기록':'라인업 발표 전')};
+if(D.mode==='lineup'){document.getElementById('vbL').addEventListener('click',()=>show('L'));document.getElementById('vbF').addEventListener('click',()=>show('F'));show('L')}
+else{document.getElementById('seg').hidden=true;show('F')}
 const outs=ip=>{const[a,b]=String(ip).split('.');return(+a)*3+(+b||0)};
 document.getElementById('pit').innerHTML=D.pit.map(p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/o*21).toFixed(1),tags=[],atk=[];
  if(+bb7>=7){tags.push(['r','볼넷·사구 허용형']);atk.push('초구·유인구 참기, 볼카운트 유리할 때 공략','투구수 늘리기 — 출루 우선')}
