@@ -134,10 +134,7 @@ function fan(p){const b=p.balls,n=b.length||1,c=[0,0,0];b.forEach(x=>c[x.dir]++)
  const lab=['좌','중','우'],mx=Math.max(...c);
  for(let i=0;i<3;i++){const[tx,ty]=pt(-36+i*36,i===1?101:97),top=c[i]===mx&&b.length;s+=`<text x="${tx.toFixed(0)}" y="${(ty+(i===1?2:4)).toFixed(0)}" text-anchor="middle" font-size="${top?10:8.5}" font-weight="${top?700:500}" fill="${top?'var(--fantop)':'var(--sub)'}">${lab[i]} ${Math.round(c[i]/n*100)}%</text>`}
  return s+'</svg>'}
-function tag(p){const b=p.balls,n=b.length;if(!n)return'타구 기록 없음';const c=[0,0,0];b.forEach(x=>c[x.dir]++);const sh=c.map(v=>v/n),bt=batsOf(p.bt);
- const pull=bt==='우타'?sh[0]:bt==='좌타'?sh[2]:null,push=bt==='우타'?sh[2]:bt==='좌타'?sh[0]:null;
- if(pull===null){const i=sh.indexOf(Math.max(...sh));return sh[i]>=.5?['좌측','중앙','우측'][i]+' 쏠림 '+Math.round(sh[i]*100)+'%':'전방향 분산'}
- if(pull>=.5)return`당겨치기 ${Math.round(pull*100)}%`;if(push>=.5)return`밀어치기 ${Math.round(push*100)}%`;if(sh[1]>=.45)return'중앙 위주';return'전방향 분산'}
+function tag(p){const b=p.balls,n=b.length;if(!n)return'타구 기록 없음';const c=[0,0,0];b.forEach(x=>c[x.dir]++);const sh=c.map(v=>v/n);if(sh[0]>=.5)return`좌익 방향 ${Math.round(sh[0]*100)}%`;if(sh[2]>=.5)return`우익 방향 ${Math.round(sh[2]*100)}%`;if(sh[1]>=.45)return`중견 방향 ${Math.round(sh[1]*100)}%`;return'전방향 분산'}
 function card(row,o){const p=P[row.nm];const[no,name]=split(row.nm);const bt=p?batsOf(p.bt):'';
  const badge=o.kind==='start'?`<span class="ord" aria-label="${esc(row.o)}번 타자">${esc(row.o)}</span>`:o.kind==='sub'?`<span class="ord s">후보</span>`:'';
  const head=`<div class="hd"><span class="who">${badge}<span class="no">${esc(no)}</span><span class="nmx">${esc(name)}</span>${row.pos?`<span class="ps">· ${esc(POS[row.pos]||row.pos)}</span>`:''}</span><span class="bt${bt?'':' u'}">${bt||'타격 미확인'}${p?' · '+p.G+'G':''}</span></div>`;
