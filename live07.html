@@ -96,11 +96,12 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 .gnone{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:12px;border:1px dashed #5d8a63;color:#a9c6a4;font-size:13.5px}
 .glogo{display:inline-flex;border-radius:11px;box-shadow:0 0 0 1px #5d8a63}.glogo svg{display:block}
 .h1r{display:flex;align-items:center;gap:8px;min-width:0}.olg{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0}.plg{width:22px;height:22px;border-radius:50%;object-fit:cover;background:#fff;vertical-align:middle;margin-right:6px;flex-shrink:0;border:1px solid rgba(0,0,0,.12)}.pkl .op{display:flex;align-items:center}
+.lh{display:flex;gap:6px;align-items:center}
 </style>
 </head>
 <body>
 <header class="top">
-  <a class="glogo" href="index.html" aria-label="경기 목록으로" title="경기 목록으로"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#151515"/><text x="24" y="33" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="34" fill="#ef7d22" stroke="#fff" stroke-width="1.6" paint-order="stroke">g</text></svg></a>
+  <div class="lh"><span class="glogo" aria-hidden="true"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#151515"/><text x="24" y="33" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="34" fill="#ef7d22" stroke="#fff" stroke-width="1.6" paint-order="stroke">g</text></svg></span><a class="ib" href="index.html" aria-label="홈(경기 목록)" title="홈(경기 목록)">⌂</a></div>
   <div class="tt"><div class="h1r"><img id="olg" class="olg" alt="" hidden onerror="this.remove()"><h1 id="title"></h1></div><div class="st" id="sub"></div></div>
   <div class="hl" id="hl"></div><div class="tools"><button class="ib" id="thm" aria-label="화면 밝기 전환">☀</button><button class="ib" id="fsb" aria-label="전체화면 전환">⤢</button></div>
   <div class="gbar"><a class="gnext gprev" id="gprev" hidden></a><div class="pk"><button class="gsel" id="pkb" aria-haspopup="true" aria-expanded="false">경기 선택 ▾</button><div id="pkl" class="pkl" hidden></div></div><a class="gnext" id="gnext" hidden></a></div>
