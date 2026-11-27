@@ -19,7 +19,8 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
 .top{position:sticky;top:0;z-index:5;background:var(--board);color:#f4f9f1;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;padding:8px max(2vw,12px)}
 .top h1{font-size:20px;margin:0;font-weight:700}.top .st{font-size:13px;color:#d3e6cf}
-.nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.home{display:inline-flex;align-items:center;height:42px;padding:0 12px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-weight:500}#pick{height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font:inherit;padding:0 8px;max-width:46vw}.nav button{min-width:48px;height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font-size:18px;cursor:pointer}
+.nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.home{display:inline-flex;align-items:center;height:42px;padding:0 12px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;text-decoration:none;font-weight:500}
+.thm{height:42px;padding:0 12px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font:inherit;font-weight:500;cursor:pointer}#pick{height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font:inherit;padding:0 8px;max-width:46vw}.nav button{min-width:48px;height:42px;border-radius:8px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font-size:18px;cursor:pointer}
 .nav button:focus-visible,summary:focus-visible{outline:3px solid #fac775}
 .wrap{padding:10px max(2vw,12px) 28px}.glinks{display:flex;gap:8px;flex-wrap:wrap;margin:4px 2px 0}.glinks a{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}.glinks a b{color:var(--fantop);margin-right:6px}.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 2px 0}.seg button{min-height:44px;padding:0 18px;border:0;background:var(--card);color:var(--sub);font:inherit;font-weight:500;cursor:pointer}.seg button[aria-pressed=true]{background:#27500A;color:#fff;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -64,7 +65,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 <body>
 <header class="top">
   <div><h1 id="title"></h1><div class="st" id="sub"></div></div>
-  <div class="nav"><a class="home" href="index.html">⌂ 경기 목록</a><select id="pick" aria-label="경기 선택"></select><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
+  <div class="nav"><button class="thm" id="thm" aria-label="화면 밝기 전환">화면: 자동</button><a class="home" href="index.html">⌂ 경기 목록</a><select id="pick" aria-label="경기 선택"></select><span id="nav" style="display:flex;gap:6px"><button id="prev" aria-label="이전 타순">◀</button><button id="next" aria-label="다음 타순">▶</button></span></div>
 </header>
 <main class="wrap">
   <div class="glinks" id="glinks"></div>
@@ -186,6 +187,7 @@ document.getElementById('h2h').innerHTML=(D.h2h||[]).length?D.h2h.map(g=>{const 
  <div class="sb"><table><thead><tr>${hd}</tr></thead><tbody>${rows}</tbody></table></div>
  ${pitT(g.pitch,D.opp+' 투수')}${batT(g.bat,D.opp+' 타자')}${g.ourpitch?pitT(g.ourpitch,'글로베어스 투수'):''}${g.ourbat?batT(g.ourbat,'글로베어스 타자'):''}</div></details>`}).join(''):`<div class="pc note" style="margin:0">2026년 맞대결 기록이 없습니다.</div>`;
 }
+{const K='glo-theme',b=document.getElementById('thm'),L={auto:'화면: 자동',light:'화면: 밝게',dark:'화면: 어둡게'},N={auto:'light',light:'dark',dark:'auto'};const ap=v=>{if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;if(b)b.textContent=L[v]};let v='auto';try{v=localStorage.getItem(K)||'auto'}catch(e){}if(!L[v])v='auto';ap(v);if(b)b.addEventListener('click',()=>{v=N[v];try{localStorage.setItem(K,v)}catch(e){}ap(v)})}
 </script>
 </body>
 </html>
