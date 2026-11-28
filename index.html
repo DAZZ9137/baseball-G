@@ -89,7 +89,7 @@ get('/club/info/schedule/table?season=2027&club_idx=25486&game_type=0&lig_idx=0&
  d.querySelectorAll('tr').forEach(tr=>{const c0=tr.children[0]?.textContent||'',m=c0.match(/(\d+)월(\d+)일/),tm=(c0.match(/(\d+):(\d+)/)||[]);const t1=tr.querySelector('.team1'),t2=tr.querySelector('.team2');if(!m||!t1||!t2||!tm[0])return;
   const s=Date.parse(`2027-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}T${tm[1].padStart(2,'0')}:${tm[2]}:00+09:00`),n1=t1.querySelector('.team_name')?.textContent.trim()||'',n2=t2.querySelector('.team_name')?.textContent.trim()||'',vn=/성남중/.test(tr.textContent)?'중':/성남고/.test(tr.textContent)?'고':'';
   F.push({s,n1,n2,vn});const sc=x=>{const v=(x.querySelector('.score')?.textContent||'').trim();return /^\d+$/.test(v)?+v:null};const a=sc(t1),b=sc(t2);if(a!==null&&b!==null)SC[KST(s).slice(0,10)]=[a,b,/몰수/.test(tr.textContent)]});
- window.__SC=SC;const CH=[];
+ window.__SC=SC;const CH=[];try{if(F.length)localStorage.setItem('glo-sched27',JSON.stringify({F:[...F].sort((a,b)=>a.s-b.s),at:Date.now()}))}catch(e){}
  if(F.length){F.sort((a,b)=>a.s-b.s);const used=new Set(),cnt={};
   [...G].sort((a,b)=>a.s-b.s).forEach(g=>{const o=NRM(oppOf(g));cnt[o]=(cnt[o]||0)+1;const cand=F.filter(f=>NRM(f.n1)!=='글로베어스'?NRM(f.n1)===o:NRM(f.n2)===o).filter(f=>!used.has(f));const f=cand[0];if(!f)return;used.add(f);
    const tr=g.tr,vc=tr.children[1].querySelector('.gk'),curV=vc?vc.textContent.trim():'',tms=[...tr.querySelectorAll('.tmw')],curFirst=NRM(tms[0].textContent),newFirst=NRM(f.n1);
