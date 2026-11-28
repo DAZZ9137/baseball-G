@@ -28,7 +28,7 @@ ul.ck{margin:4px 0;padding-left:1.2em}ul.ck li{margin:2px 0}
 .lg{background:var(--cell);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px;margin-top:8px}.lg b{color:#b5650a}
 .src{font-size:12px;color:var(--sub);margin-top:6px}
 .soon{opacity:.6;border-style:dashed}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.chips button{font:inherit;font-size:13.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.chips button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.chips button{font:inherit;font-size:13.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.chips .pno{font-weight:900}.chips .psep{font-style:normal;opacity:.45;margin:0 6px}.chips button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
 /* field */
 .fwrap{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:760px){.fwrap{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
 .field{background:var(--board);border-radius:12px;padding:6px}.field svg{width:100%;height:auto;display:block}
@@ -268,7 +268,7 @@ const POSLIST=[['P','투수',1],['C','포수',2],['1B','1루수',3],['2B','2루�
 {const svg=document.getElementById('fPos'),ch=document.getElementById('posChips'),cd=document.getElementById('posCard');field(svg);
  const show=k=>{ch.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));const d=POS[k];if(!d){draw(svg,{hi:[k]});cd.innerHTML=`<h3><span class="tag">${POSLIST.find(p=>p[0]===k)[2]}번</span>${POSLIST.find(p=>p[0]===k)[1]} <span class="tag">작성 예정</span></h3><p style="color:var(--sub)">확정 후 1루수와 같은 형식(기본 위치 · 꼭 할 일 · 백업/커버 + 그림)으로 채웁니다.</p>`;return}
   draw(svg,{hi:d.hi,arrows:d.arrows,note:'주황 = '+d.n+' · 화살표 = 대표 백업·커버 이동'});cd.innerHTML=`<h3><span class="tag">${POSLIST.find(p=>p[0]===k)[2]}번</span>${d.n}</h3><dl class="kv"><dt>기본 위치</dt><dd>${d.base}</dd></dl><b>꼭 할 일</b><ul class="ck">${d.must.map(x=>`<li>${x}</li>`).join('')}</ul><b>백업 · 커버</b><ul class="ck">${d.back.map(x=>`<li>${x}</li>`).join('')}</ul>`};
- ch.innerHTML=POSLIST.map(([k,n,i])=>`<button data-k="${k}"><b>${i}</b> ${n}${POS[k]?'':' ·'}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('P')}
+ ch.innerHTML=POSLIST.map(([k,n,i])=>`<button data-k="${k}"><b class="pno">${i}</b><i class="psep">|</i>${n}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('P')}
 // ---- ③ 런다운 ----
 {const r1=[180,145];player(document.getElementById('rd'),document.getElementById('fRd'),document.getElementById('rdSteps'),[
 {t:'투수 견제 → 1루 주자가 1·2루 사이에 갇힘. <b>1루수</b>가 공을 잡음',runners:[r1],hi:['1B'],ball:[204,168],arrows:[['P','1','ball']]},
