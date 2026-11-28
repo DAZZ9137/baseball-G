@@ -240,7 +240,7 @@ document.getElementById('sub').textContent=D.sub;
 document.getElementById('hl').innerHTML=(D.links||[]).map(l=>`<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');document.getElementById('glinks').style.display='none';
 {const KEY='glo-sched27',NRM=x=>(x||'').replace(/\(.*?\)/g,'').replace(/\s+/g,'').trim(),KST=t=>new Date(t+9*3600e3).toISOString(),WD='일월화수목금토';
  const apply=F=>{if(!Array.isArray(F)||!F.length)return[];const gm=(D.games||[]).filter(g=>g.md&&g.ts&&!g.live),used=new Set(),CH=[];
-  [...gm].sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts)).forEach(g=>{const o=NRM(g.label),f=F.filter(f=>!used.has(f)&&(NRM(f.n1)==='글로베어스'?NRM(f.n2):NRM(f.n1))===o)[0];if(!f)return;used.add(f);const s0=Date.parse(g.ts),ch=[];
+  [...gm].sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts)).forEach(g=>{const o=NRM(g.label),f=F.filter(f=>!used.has(f)&&(NRM(f.n1)==='글로베어스'?NRM(f.n2):NRM(f.n1))===o)[0];if(!f)return;used.add(f);const s0=Date.parse(g.ts),ch=[];g.first=NRM(f.n1)==='글로베어스';
    const old=`${KST(s0).slice(5,7)}.${KST(s0).slice(8,10)} ${KST(s0).slice(11,16)}${g.vn?' '+g.vn:''}`;
    if(f.s!==s0){g.ts=new Date(f.s).toISOString();const x=KST(f.s);g.md=`${+x.slice(5,7)}/${+x.slice(8,10)}`;g.wd=x.slice(11,16);ch.push('일시')}
    if(f.vn&&f.vn!==g.vn){g.vn=f.vn;ch.push('구장')}
@@ -248,6 +248,9 @@ document.getElementById('hl').innerHTML=(D.links||[]).map(l=>`<a href="${esc(l.h
   const gs=D.games||[],idx=gs.filter(g=>!g.md),rest=gs.filter(g=>g.md&&!g.live).sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts)),lv=gs.filter(g=>g.live);D.games=[...idx.slice(0,1),...rest,...idx.slice(1),...lv];return CH};
  let cache=null;try{cache=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
  const here=location.pathname.split('/').pop()||'index.html',CH=apply(cache&&cache.F).filter(c=>c.g.href===here);
+ {const mine=(D.games||[]).filter(g=>g.href===here&&g.md&&!g.live&&g.first!==undefined),nx=mine.find(g=>Date.parse(g.ts)+4*3600e3>Date.now())||mine[mine.length-1];
+  if(nx&&D.sub&&/선공|후공/.test(D.sub)){const was=/글로베어스 선공/.test(D.sub);const segs=D.sub.split(' · ').filter(x=>!/선공|후공/.test(x)),now=nx.first?'글로베어스 선공':`${D.opp||nx.label} 선공`;
+   if(was!==nx.first){segs.push(now);D.sub=segs.join(' · ');D.inn=nx.first?'1회말':'1회초';const se=document.getElementById('sub');if(se)se.textContent=D.sub;CH.push({g:nx,txt:`선공·후공 변경 → <b>${now}</b>`})}}}
  if(CH.length){const m=document.querySelector('main');m&&m.insertAdjacentHTML('afterbegin',`<div class="chgw2">🔄 게임원 일정 변경 반영 · ${CH.map(c=>c.txt).join(' · ')}</div>`)}
  if((D.games||[]).some(g=>g.md&&g.ts&&!g.live)){const W='https://glo-live.lonelyms9137.workers.dev';const ac=new AbortController();setTimeout(()=>ac.abort(),25000);
  fetch(W+'/?p='+encodeURIComponent('/club/info/schedule/table?season=2027&club_idx=25486&game_type=0&lig_idx=0&group=0&month=0&page=1')+'&t='+Date.now(),{signal:ac.signal,cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(h=>{const d=new DOMParser().parseFromString(h,'text/html'),F=[];
