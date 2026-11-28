@@ -312,7 +312,7 @@ function draw(){const st=$('fst');const tx=lastOk?`마지막 확인 ${lastOk.toL
  if(nu.start!==lastStart){adj=0;lastStart=nu.start}const mm=Math.max(nu.m,done),inProg=nu.m>done;const N=nu.N,k=Math.min(6,N),start=((nu.start+adj)%N+N)%N;
  const six=[];for(let i=0;i<N;i++){const s=nu.slots[i],r=occAt(R,s,mm+1);six.push({o:s,pos:r[1],nm:r[2],memo:today(r)?'오늘: '+today(r):'',_i:i})}
  $('main').innerHTML=six.map(r=>card(r,{kind:'start',lead:r._i===start})).join('');
- const s0=nu.slots[start];$('title').textContent=nu.m===0&&done===0?`1회${h} 수비 예상 타자 · ${s0}번부터`:inProg?`${nu.m}회${h} ${D.opp} 공격 중 · 다음 타자 ${s0}번부터`:`${done+1}회${h} 수비 예상 타자 · ${s0}번부터`;
+ const s0=nu.slots[start];$('title').textContent=`${D.opp} | `+(nu.m===0&&done===0?`1회${h} ${s0}번부터 수비`:inProg?`${nu.m}회${h} 공격 중 · 다음 ${s0}번부터`:`${done+1}회${h} ${s0}번부터 수비`);
  $('mainHead').innerHTML=`선발 라인업 <span class="cnt">주황 테두리 = 다음 수비 이닝 선두타자 예상(게임원 기록 기준) · ◀ ▶ 선두 조정</span>`;
  $('starters').innerHTML=starters.map(r=>card({o:r[0],pos:r[1],nm:r[2],memo:today(r)?'오늘: '+today(r):''},{kind:'start'})).join('');
  $('subs').innerHTML=subs.map(r=>card({o:'',pos:r[1],nm:r[2],memo:`${r[0]}번 교체 출전`+(today(r)?' · 오늘: '+today(r):'')},{kind:'sub'})).join('');$('subCnt').textContent=subs.length+'명';
