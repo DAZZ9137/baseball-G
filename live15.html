@@ -318,7 +318,11 @@ function draw(){const st=$('fst');const p2=n=>String(n).padStart(2,'0'),tx=lastO
  $('subs').innerHTML=subs.map(r=>card({o:'',pos:r[1],nm:r[2],memo:`${r[0]}번 교체 출전`+(today(r)?' · 오늘: '+today(r):'')},{kind:'sub'})).join('');$('subCnt').textContent=subs.length+'명';
  const nI=Math.max(n,nu.m);$('liveOpp').innerHTML=`<div class="scroll"><table class="bx"><thead><tr><th>타순</th><th>선수</th>${[...Array(nI)].map((_,i)=>`<th>${i+1}회</th>`).join('')}</tr></thead><tbody>${R.map(r=>{const[no,name]=split(r[2]);return`<tr><td>${esc(r[0])} ${esc(POS[r[1]]||r[1])}</td><td><span class="no">${esc(no)}</span> <b>${esc(name)}</b></td>${[...Array(nI)].map((_,i)=>`<td>${esc(r[3+i]||'').replace(/\//g,' / ')}</td>`).join('')}</tr>`}).join('')}</tbody></table></div>`;
  if(S.urows.length){$('usHead').hidden=false;$('usHead').textContent=F.usName+' 타석 기록 (게임원 실시간)';$('liveUs').innerHTML=batTbl(S.urows,nI,()=>true)}
- let cur=S.pits[S.pits.length-1],curLab='';if(!cur){const sp=(S.rows||[]).find(r=>/^(투|P|1)$/.test(r[1]));if(sp){cur=sp[2];curLab='선발 투수 · 라인업 기준'}}$('curP').innerHTML=cur?`<b>${curLab?esc(D.opp)+' 선발 투수(라인업 기준)':'현재 '+esc(D.opp)+' 투수'}</b> ${esc(cur)}${S.pits.length>1?` <span class="cnt">(오늘 ${S.pits.length}번째 · ${S.pits.map(esc).join(' → ')})</span>`:''}`:'';
+ let cur=S.pits[S.pits.length-1],curLab='';if(!cur){const sp=(S.rows||[]).find(r=>/^(투|P|1)$/.test(r[1]));if(sp){cur=sp[2];curLab='선발 투수 · 라인업 기준'}}{const oN=filled(S.opp.inn),uN=filled(S.us.inn),un=F.usName||'우리 팀',os=(S.opp.tot||[])[0]||'0',us=(S.us.tot||[])[0]||'0';let sit,usBat;
+ if(S.oppFirst){if(oN>uN){sit=`${oN}회말 ${un} 공격`;usBat=true}else{sit=`${oN+1}회초 ${D.opp} 공격`;usBat=false}}else{if(uN>oN){sit=`${uN}회말 ${D.opp} 공격`;usBat=false}else{sit=`${uN+1}회초 ${un} 공격`;usBat=true}}
+ if(oN===0&&uN===0)sit='경기 시작 전 · '+sit;
+ const sc=S.oppFirst?`${esc(D.opp)} ${esc(os)} : ${esc(us)} ${esc(un)}`:`${esc(un)} ${esc(us)} : ${esc(os)} ${esc(D.opp)}`;
+ $('curP').innerHTML=`<b>${esc(sit)} 차례</b> <span class="cnt">· ${sc}${usBat&&cur?` · 상대 투수 ${esc(cur)}`:''}</span>`}
  $('pit').innerHTML=pitLive(cur,S.pits,curLab);
  if(!autoL){autoL=true;showF('L')}}
 const showF=v=>{show(v);if(v==='L')draw()};
