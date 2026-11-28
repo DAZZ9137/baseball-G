@@ -301,8 +301,8 @@ function nextUp(rows){const slots=[...new Set(rows.map(r=>r[0]).filter(x=>/^\d+$
 const occAt=(rows,s,m)=>{const rs=rows.filter(r=>r[0]===s);let cur=rs[0];rs.forEach(r=>{if(first(r)<=m)cur=r});return cur};
 const today=r=>r.slice(3).filter(Boolean).map(c=>c.split('/').map(p=>p.split(',').filter(x=>!/^(대타|대수비|대주자)$/.test(x.trim()))[0]).filter(Boolean).join(' · ')).filter(Boolean).join(' / ');
 const filled=a=>{let n=0;a.forEach((v,i)=>{if(v!=='')n=i+1});return n};
-function draw(){const st=$('fst');const tx=lastOk?`마지막 확인 ${lastOk.toLocaleTimeString('ko-KR',{hour12:false})} · ${PX[pxi].n}`:'게임원 확인 중…';
- st.innerHTML=`<span class="dot${lastErr?' bad':''}"></span><b>실시간</b> · ${esc(tx)} · 30초마다 자동 갱신${lastErr?` · <span style="color:#e24b4a">${esc(lastErr)}</span>`:''}`;
+function draw(){const st=$('fst');const p2=n=>String(n).padStart(2,'0'),tx=lastOk?`${p2(lastOk.getHours())}:${p2(lastOk.getMinutes())}:${p2(lastOk.getSeconds())} 확인${pxi?' · '+PX[pxi].n:''}`:'게임원 확인 중…';
+ st.innerHTML=`<span class="dot${lastErr?' bad':''}"></span><b>실시간</b> · ${esc(tx)} · 30초 갱신${lastErr?` · <span style="color:#e24b4a">${esc(lastErr)}</span>`:''}`;
  if(!S)return;const h=S.oppFirst?'초':'말',half=S.oppFirst?'말':'초';
  const n=Math.max(7,filled(S.opp.inn),filled(S.us.inn));const A=S.oppFirst?[S.opp,S.us]:[S.us,S.opp];const nmOf=r=>r===S.opp?D.opp:F.usName;
  $('sbBox').innerHTML=`<div class="sb"><table><thead><tr><th>팀</th>${[...Array(n)].map((_,i)=>`<th>${i+1}</th>`).join('')}<th class="tot first"><span class="lf">득점</span><span class="ls">R</span></th><th class="tot"><span class="lf">안타</span><span class="ls">H</span></th><th class="tot"><span class="lf">실책</span><span class="ls">E</span></th><th class="tot"><span class="lf">4사구</span><span class="ls">B</span></th></tr></thead><tbody>${A.map(r=>`<tr><td>${esc(nmOf(r))}</td>${[...Array(n)].map((_,i)=>`<td>${esc(r.inn[i]||'')}</td>`).join('')}${[0,1,2,3].map(i=>`<td class="tot${i?'':' first'}">${esc(r.tot[i]||'')}</td>`).join('')}</tr>`).join('')}</tbody></table><div class="st2">게임원 박스스코어 기준 · 입력 지연 가능${F.usName&&F.usName!=='글로베어스'?` (${esc(F.usName)}=우리팀 가정)`:''}</div></div>`;
