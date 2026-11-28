@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>야구 가이드 · 글로베어스</title>
+<link rel="icon" href="icon-192.png?v=4">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#e3e9df,#0b100d);--card:light-dark(#fff,#24362a);--cell:light-dark(#f3f6f1,#30463a);--line:light-dark(#d3dccf,#4d6a55);--ink:light-dark(#10200f,#f1f6ef);--sub:light-dark(#4d5a48,#c2d0bd);--board:#14361d;--acc:#27500A;--org:#ef7d22}
+html[data-theme=light]{color-scheme:light}html[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif}
+.top{position:sticky;top:0;z-index:5;background:var(--board);color:#f4f9f1;padding:7px max(2vw,10px)}
+.tr{display:flex;align-items:center;gap:10px}
+.ib{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid #5d8a63;background:#1f4a28;color:#fff;font-size:19px;text-decoration:none;cursor:pointer;flex-shrink:0}
+.top h1{font-size:18px;margin:0;flex:1}.top h1 small{display:block;font-size:12px;font-weight:400;color:#c9e0c4}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:7px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex-shrink:0;min-height:36px;padding:0 13px;border-radius:999px;border:1px solid #5d8a63;background:#1f4a28;color:#e8f2e5;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected=true]{background:#fac775;border-color:#fac775;color:#2a1a00}
+main{max-width:1100px;margin:0 auto;padding:10px max(2vw,10px) 40px}
+.pv{background:#efe7fa;border:1px solid #c9b3ea;color:#4b2a7a;border-radius:10px;padding:7px 11px;font-size:13px;margin:4px 0 10px}
+section[hidden]{display:none}
+h2{font-size:18px;margin:6px 2px 8px}h2 small{font-size:12.5px;font-weight:400;color:var(--sub);margin-left:6px}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:900px){.grid.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.card h3{margin:0 0 6px;font-size:17px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px;background:var(--cell);border:1px solid var(--line);color:var(--sub)}
+.one{background:#fff3df;border-left:4px solid var(--org);border-radius:6px;padding:6px 10px;font-weight:700;margin:4px 0 8px;color:#3a2600}
+html[data-theme=dark] .one{background:#3b2c14;color:#ffe2b8}
+.kv{display:grid;grid-template-columns:5.4em 1fr;gap:4px 10px;margin:6px 0}.kv dt{font-weight:800;color:var(--acc)}html[data-theme=dark] .kv dt{color:#9fd18a}.kv dd{margin:0}
+ul.ck{margin:4px 0;padding-left:1.2em}ul.ck li{margin:2px 0}
+.lg{background:var(--cell);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px;margin-top:8px}.lg b{color:#b5650a}
+.src{font-size:12px;color:var(--sub);margin-top:6px}
+.soon{opacity:.6;border-style:dashed}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.chips button{font:inherit;font-size:13.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.chips button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+/* field */
+.fwrap{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:760px){.fwrap{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+.field{background:var(--board);border-radius:12px;padding:6px}.field svg{width:100%;height:auto;display:block}
+.ctrl{display:flex;align-items:center;gap:6px;margin-top:6px}.ctrl button{font:inherit;font-size:14px;min-height:34px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.ctrl .st{margin-left:auto;font-size:13px;color:var(--sub)}
+.steps{margin:0;padding-left:1.4em}.steps li{margin:4px 0;opacity:.55}.steps li.on{opacity:1;font-weight:600}.steps li b{color:var(--acc)}html[data-theme=dark] .steps li b{color:#9fd18a}
+.who{display:inline-block;min-width:1.9em;text-align:center;font-size:12px;font-weight:800;border-radius:5px;padding:0 4px;background:#27500A;color:#fff;margin-right:3px}
+.who.r{background:#c8352f}
+</style></head><body>
+<header class="top"><div class="tr"><a class="ib" href="index.html" title="홈">⌂</a><h1>📘 야구 가이드<small>사회인 야구에서 헷갈리는 수비·주루·규칙</small></h1><button class="ib" id="thm">☀</button></div>
+<nav class="tabs" role="tablist">
+<button role="tab" data-t="pos" aria-selected="true">① 포지션별 역할</button>
+<button role="tab" data-t="run">② 주루 기본</button>
+<button role="tab" data-t="rd">③ 런다운</button>
+<button role="tab" data-t="sit">④ 상황별 수비</button>
+<button role="tab" data-t="rule">⑤ 헷갈리는 규칙</button>
+<button role="tab" data-t="lg">⑥ 우리 리그 규정</button>
+</nav></header>
+<main>
+<div class="pv">🔎 <b>미리보기</b> · 탭마다 1~2개 항목만 완성해 형식을 보여 드립니다. 나머지 항목은 확정 후 같은 형식으로 채웁니다.</div>
+
+<!-- ① 포지션 -->
+<section id="pos">
+<h2>포지션별 역할 <small>기본 위치 · 꼭 할 일 · 백업/커버</small></h2>
+<div class="chips" id="posChips"></div>
+<div class="fwrap"><div><div class="field"><svg id="fPos" viewBox="0 0 300 270"></svg></div></div>
+<div class="card" id="posCard"></div></div>
+</section>
+
+<!-- ② 주루 -->
+<section id="run" hidden>
+<h2>주루 기본 <small>베이스 밟기 · 태그업 · 타구 판단</small></h2>
+<div class="grid two">
+<div class="card"><h3>베이스는 반드시 밟는다 <span class="tag">미터치 아웃</span></h3>
+<div class="one">베이스를 안 밟고 지나가면, 수비가 "어필"해서 아웃시킬 수 있다</div>
+<dl class="kv"><dt>1루</dt><dd>지나쳐 달려도(오버런) 됨. 단, 돌아올 때 <b>2루 쪽으로 몸을 틀면</b> 진루 의사로 보고 태그 아웃 가능</dd>
+<dt>2·3루</dt><dd>지나치면 태그 아웃. 슬라이딩·멈춤으로 베이스 위에서 끝낼 것</dd>
+<dt>홈</dt><dd>홈을 안 밟고 덕아웃 가면 득점 무효 가능. 포수 태그 피했으면 <b>다시 돌아와 밟기</b></dd>
+<dt>어필 방법</dt><dd>(수비) 공을 가진 채 그 베이스를 밟거나 주자를 태그하고 심판에게 "안 밟았다"고 알림. <b>다음 투구 전</b>에 해야 함</dd></dl>
+<div class="src">공식야구규칙 5.09(b)(4) 오버런 · 5.09(c)(2) 어필</div></div>
+<div class="card"><h3>태그업 <span class="tag">뜬공 진루</span></h3>
+<div class="one">뜬공은 "잡히는 순간" 출발. 그 전에 출발하면 어필로 아웃</div>
+<dl class="kv"><dt>언제</dt><dd>2아웃 전, 외야 뜬공이 깊을 때(3루 주자는 거의 항상 준비)</dd>
+<dt>순서</dt><dd>베이스로 돌아가 발 붙이고 → 공이 글러브에 <b>처음 닿는 순간</b> 출발(완전히 잡을 때까지 기다리지 않아도 됨)</dd>
+<dt>판단</dt><dd>3루 코치를 보지 말고 공을 볼 것. 코치가 "고!" 콜</dd>
+<dt>2아웃</dt><dd>태그업 없음. 맞는 순간 무조건 스타트</dd></dl>
+<div class="src">공식야구규칙 5.09(b)(5) · 정의(포구)</div></div>
+</div>
+<div class="card soon" style="margin-top:10px">작성 예정 · 땅볼 때 앞주자 판단(2루 주자는 자기 앞쪽 땅볼이면 정지) · 라이너는 일단 정지 · 2아웃 후 주루 · 슬라이딩 원칙 · 리드 폭</div>
+</section>
+
+<!-- ③ 런다운 -->
+<section id="rd" hidden>
+<h2>런다운 <small>주자가 베이스 사이에 갇혔을 때</small></h2>
+<div class="fwrap"><div><div class="field"><svg id="fRd" viewBox="0 0 300 270"></svg></div>
+<div class="ctrl"><button data-a="prev">◀ 이전</button><button data-a="next">다음 ▶</button><button data-a="play">▶ 자동</button><span class="st"></span></div></div>
+<div class="card"><h3>1·2루 사이 런다운 <span class="tag">견제에 걸린 1루 주자</span></h3>
+<ol class="steps" id="rdSteps"></ol></div></div>
+<div class="grid two" style="margin-top:10px">
+<div class="card"><h3>🛡 수비 입장</h3><ul class="ck">
+<li><b>뒤쪽(원래) 베이스 방향으로 몬다</b>: 아웃 못 시켜도 진루는 막는다</li>
+<li>공은 <b>머리 위로 들고</b> 보여주며 달린다 (던지는 척 반복 금지, 동료가 헷갈림)</li>
+<li>송구는 <b>1~2번 안에 끝내는 게 목표</b>. 받을 사람이 "지금!" 콜 → 짧게 토스</li>
+<li>던진 사람은 송구한 쪽 <b>베이스 뒤로 빠져</b> 다음 커버 (주자 진로에서 비켜서기)</li>
+<li>공 없는 수비수가 주자 길을 막으면 <b>주루방해</b> → 주자에게 베이스 줌</li></ul>
+<div class="src">공식야구규칙 6.01(h) 주루방해</div></div>
+<div class="card"><h3>🏃 공격 입장</h3><ul class="ck">
+<li>최대한 <b>오래 버틴다</b>: 다른 주자가 한 베이스씩 더 가게 만드는 게 목적</li>
+<li>공이 <b>던져진 직후</b> 방향을 바꾼다 (공 든 수비수 쪽으로 가지 않기)</li>
+<li>태그를 피해 <b>주로에서 3피트(약 1m) 이상 벗어나면 아웃</b></li>
+<li>공 없는 수비수와 부딪히게 되면 멈추지 말고 그대로: 주루방해 판정 가능</li></ul>
+<div class="src">공식야구규칙 5.09(b)(1) 3피트 라인</div></div></div>
+</section>
+
+<!-- ④ 상황별 수비 -->
+<section id="sit" hidden>
+<h2>상황별 수비 <small>누가 어디로 가는지</small></h2>
+<div class="chips" id="sitChips"></div>
+<div class="fwrap"><div><div class="field"><svg id="fSit" viewBox="0 0 300 270"></svg></div>
+<div class="ctrl"><button data-a="prev">◀ 이전</button><button data-a="next">다음 ▶</button><button data-a="play">▶ 자동</button><span class="st"></span></div></div>
+<div class="card"><h3 id="sitTitle"></h3><ol class="steps" id="sitSteps"></ol><div class="lg" id="sitTip"></div></div></div>
+</section>
+
+<!-- ⑤ 규칙 -->
+<section id="rule" hidden>
+<h2>헷갈리는 규칙 <small>개념 · 적용 시점 · 예외</small></h2>
+<div class="grid two">
+<div class="card"><h3>낫아웃 <span class="tag">스트라이크 낫아웃</span></h3>
+<div class="one">세 번째 스트라이크를 포수가 "바로" 못 잡으면, 타자는 1루로 뛸 수 있다</div>
+<dl class="kv"><dt>적용</dt><dd>① 1루가 비어 있을 때 ② 또는 <b>2아웃</b>이면 1루 주자 유무와 상관없이</dd>
+<dt>예외</dt><dd><b>0·1아웃 + 1루 주자 있음</b> → 공을 놓쳐도 그냥 삼진 아웃 (일부러 떨어뜨려 병살 노리는 걸 막는 규칙)</dd>
+<dt>못 잡음</dt><dd>원바운드로 받은 것도 "못 잡음". 원바운드 공에 헛스윙해 3스트라이크면 해당</dd>
+<dt>타자</dt><dd>바로 1루로 뛸 것. 홈 주변 흙 원을 벗어나 덕아웃 쪽으로 가버리면 아웃</dd>
+<dt>포수</dt><dd>공 주워서 <b>타자 태그</b> 또는 <b>1루 송구</b>. 만루·포스 상황이면 홈 밟아도 아웃</dd></dl>
+<div class="lg">⚾ 사회인 야구 포인트: 타자가 안 뛰는 경우가 많다. <b>원바운드 삼진이면 일단 뛴다.</b> 포수는 놓쳤으면 확실히 처리하고 넘어가기.</div>
+<div class="src">공식야구규칙 5.05(a)(2) · 5.09(a)(3)</div></div>
+<div class="card"><h3>인필드 플라이 <span class="tag">내야 뜬공</span></h3>
+<div class="one">심판이 "인필드 플라이" 선언하면, 공을 잡든 놓치든 타자는 아웃</div>
+<dl class="kv"><dt>적용</dt><dd><b>0·1아웃</b> + 주자 <b>1·2루 또는 만루</b> + 내야수가 평범하게 잡을 수 있는 <b>페어 뜬공</b></dd>
+<dt>제외</dt><dd>라이너, 번트 뜬공, 주자 1루만 / 1·3루 등 2루가 비면 해당 없음</dd>
+<dt>이유</dt><dd>일부러 떨어뜨려 병살 만드는 걸 막기 위해</dd>
+<dt>주자</dt><dd>타자가 이미 아웃이라 <b>포스(밀어내기)가 사라짐</b>. 뛸 의무 없음. 공이 잡히면 리터치 후 진루, 떨어지면 리터치 없이 위험 감수하고 진루 가능</dd>
+<dt>파울</dt><dd>선언 후 파울이 되면 그냥 파울</dd></dl>
+<div class="lg">⚾ 포인트: 선언 들리면 주자는 <b>베이스 근처 대기</b>. 공 떨어졌다고 무작정 뛰면 태그 아웃.</div>
+<div class="src">공식야구규칙 정의(인필드 플라이) · 5.09(a)(5)</div></div>
+<div class="card"><h3>보크 <span class="tag">주자 있을 때 투수 반칙</span></h3>
+<div class="one">주자가 있을 때 투수가 주자를 속이는 동작을 하면, 모든 주자가 한 베이스씩 간다</div>
+<dl class="kv"><dt>적용</dt><dd><b>주자가 있을 때만</b> (주자 없으면 볼 1개)</dd>
+<dt>대표 사례</dt><dd>① 세트 자세에서 <b>완전히 멈추지 않고</b> 투구 ② 투구판 밟은 채 <b>1·3루로 던지는 척만</b> 하고 안 던짐 ③ 견제할 때 그 베이스 쪽으로 <b>발을 내딛지 않음</b> ④ 투구 동작 시작 후 중단 ⑤ 투구판 밟고 공 없이 투구 자세</dd>
+<dt>허용</dt><dd>2루로는 던지는 척만 해도 됨 · 투구판에서 발을 <b>뒤로 먼저 빼면</b> 내야수와 같아서 자유</dd>
+<dt>벌칙</dt><dd>공은 데드볼, 모든 주자 1개 진루 (투구가 이어져 타자가 출루하는 등 더 좋은 결과면 그 결과 인정)</dd></dl>
+<div class="lg">⚾ 우리 리그 규정에는 보크 별도 조항 없음 → <b>공식규칙 그대로 적용</b> (제1장 4: 명시 안 된 건 운영진 결정)</div>
+<div class="src">공식야구규칙 6.02(a)</div></div>
+<div class="card soon">작성 예정 · 포스 플레이 vs 태그 플레이 · 악송구 시 진루(2베이스) · 수비 방해 / 주루 방해 · 타구에 주자가 맞으면 · 파울팁과 파울</div>
+</div></section>
+
+<!-- ⑥ 리그 규정 -->
+<section id="lg" hidden>
+<h2>우리 리그 규정 <small>서울 성남고 리그 · 경기에 바로 쓰이는 것만</small></h2>
+<div class="grid two">
+<div class="card"><h3>⏱ 경기 시간·콜드</h3><ul class="ck">
+<li>정규 <b>7이닝</b>, 시간 내 2시간. 동점이면 무승부 (결승전 제외)</li>
+<li>시작 후 <b>1시간 50분</b>이 지나면 새 이닝 시작 불가</li>
+<li>1시간 50분이 지난 뒤 <b>7점 이상</b> 앞서면 종료</li>
+<li>콜드: <b>3회 15점 · 4회 10점 · 5회 8점 · 6회 7점</b> 차</li>
+<li>일몰·강우 콜드는 직전 이닝 점수로. 3회말 종료(말공격 팀 리드 시 3회초)면 정식 경기</li></ul></div>
+<div class="card"><h3>📋 라인업·인원</h3><ul class="ck">
+<li>라인업은 시작 <b>30분 전까지</b> 온라인 제출</li>
+<li>9명 확인되면 바로 시작. 5분 지나도 9명 미달이면 상대 3점, 10분이면 몰수패</li>
+<li>지명대타는 <b>투수에 한해서만</b></li>
+<li>대기 명단에 없는 선수는 교체 출전 불가</li></ul></div>
+<div class="card"><h3>⚾ 플레이 관련</h3><ul class="ck">
+<li><b>홈스틸 금지</b>: 투구 전 홈 스타트 금지. 투수 투구 후 폭투·패스트볼·딜레이드 스틸은 허용</li>
+<li>사구 2개 이상이면 심판이 <b>투수 교체 권유</b> 가능</li>
+<li>합의판정 <b>팀별 2회</b> (감독·감독대행만)</li>
+<li>스트라이크·볼·파울·페어·세이프·아웃 판정은 어필 불가</li>
+<li>성남고 인조잔디: <b>징 스파이크 금지</b></li></ul></div>
+<div class="card"><h3>🏆 순위·성적</h3><ul class="ck">
+<li>승점제: <b>승 3 · 무 1 · 패 0</b></li>
+<li>동률: 승자승 → 몰수패 없는 팀 → 실점 적은 팀 → 득점 많은 팀</li>
+<li>몰수 경기 점수 <b>0 : 7</b></li>
+<li>선발 승리투수: <b>3이닝 이상</b> (4회 전 종료 시 2이닝)</li>
+<li>각 조 1~4위 플레이오프 (10팀 미만이면 1~3위)</li></ul></div>
+</div>
+<div class="src">출처: 게임원 서울 성남고 리그 › 리그규정 (lig_idx=10894) · 원문 이미지 기준 요약</div>
+</section>
+</main>
+<script>
+// ---- theme ----
+{const K='glo-theme',b=document.getElementById('thm'),L={light:'☀',dark:'☾'};const ap=v=>{document.documentElement.dataset.theme=v;b.textContent=L[v]};let v='light';try{v=localStorage.getItem(K)||'light'}catch(e){}ap(v);b.onclick=()=>{v=v==='light'?'dark':'light';try{localStorage.setItem(K,v)}catch(e){}ap(v)}}
+// ---- tabs ----
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!==b.dataset.t);try{history.replaceState(null,'','#'+b.dataset.t)}catch(e){}scrollTo(0,0)});
+{const h=location.hash.slice(1);const b=document.querySelector(`.tabs button[data-t="${h}"]`);if(b)b.click()}
+// ---- field ----
+const P={P:[150,172],C:[150,252],'1B':[208,160],'2B':[184,118],SS:[116,118],'3B':[92,160],LF:[72,62],CF:[150,38],RF:[228,62]};
+const BASE={H:[150,232],'1':[208,174],'2':[150,116],'3':[92,174]};
+const NM={P:'투',C:'포','1B':'1','2B':'2',SS:'유','3B':'3',LF:'좌',CF:'중',RF:'우'};
+function field(svg){const ns='http://www.w3.org/2000/svg';svg.innerHTML=`<defs><marker id="ar${svg.id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#fac775"/></marker><marker id="ab${svg.id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#fff"/></marker></defs>
+<path d="M150,232 L20,102 A184,184 0 0 1 280,102 Z" fill="#2f6b34"/><path d="M150,232 L20,102 A184,184 0 0 1 280,102 Z" fill="none" stroke="#e8e1c8" stroke-width="2"/>
+<path d="M150,232 L208,174 L150,116 L92,174 Z" fill="#b8916a"/><path d="M150,206 L184,174 L150,140 L116,174 Z" fill="#2f6b34"/>
+<circle cx="150" cy="172" r="8" fill="#b8916a"/>${Object.values(BASE).map(([x,y])=>`<rect x="${x-5}" y="${y-5}" width="10" height="10" fill="#fff" transform="rotate(45 ${x} ${y})"/>`).join('')}<g class="ov"></g>`;return svg.querySelector('.ov')}
+function draw(svg,st){const g=svg.querySelector('.ov')||field(svg);const pos={...P,...(st.pos||{})};let h='';
+ (st.arrows||[]).forEach(([a,b,c])=>{const A=Array.isArray(a)?a:(P[a]||BASE[a]),B=Array.isArray(b)?b:(pos[b]||BASE[b]||P[b]);h+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c==='ball'?'#fff':'#fac775'}" stroke-width="${c==='ball'?2:2.2}" stroke-dasharray="${c==='ball'?'4 3':'0'}" marker-end="url(#${c==='ball'?'ab':'ar'}${svg.id})" opacity=".95"/>`});
+ Object.entries(pos).forEach(([k,[x,y]])=>{const hi=(st.hi||[]).includes(k);h+=`<g><circle cx="${x}" cy="${y}" r="${hi?11:9}" fill="${hi?'#ef7d22':'#1d3b8a'}" stroke="#fff" stroke-width="${hi?2.2:1.4}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="${hi?11:10}" font-weight="800" fill="#fff">${NM[k]||k}</text></g>`});
+ (st.runners||[]).forEach(([x,y,l])=>{h+=`<g><circle cx="${x}" cy="${y}" r="9" fill="#c8352f" stroke="#fff" stroke-width="1.4"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${l||'주'}</text></g>`});
+ if(st.ball)h+=`<circle cx="${st.ball[0]}" cy="${st.ball[1]}" r="4.5" fill="#fff" stroke="#c8352f" stroke-width="1.5"/>`;
+ if(st.note)h+=`<text x="150" y="264" text-anchor="middle" font-size="11" fill="#fac775" font-weight="700">${st.note}</text>`;g.innerHTML=h}
+function player(root,svg,ol,steps){let i=0,tm=null;const st=root.querySelector('.st');const go=n=>{i=Math.max(0,Math.min(steps.length-1,n));draw(svg,steps[i]);[...ol.children].forEach((li,j)=>li.classList.toggle('on',j<=i));st.textContent=`${i+1} / ${steps.length}`};
+ ol.innerHTML=steps.map(s=>`<li>${s.t}</li>`).join('');root.querySelectorAll('.ctrl button').forEach(b=>b.onclick=()=>{const a=b.dataset.a;if(a==='prev')go(i-1);else if(a==='next')go(i+1);else{clearInterval(tm);go(0);tm=setInterval(()=>{if(i>=steps.length-1){clearInterval(tm);return}go(i+1)},1600)}});go(0);return go}
+// ---- ① 포지션 ----
+const POS={'1B':{n:'1루수',base:'1루 베이스에서 2~3걸음 뒤, 파울라인 쪽 1~2걸음',must:['내야 땅볼: 1루로 달려가 <b>베이스 모서리를 발끝으로</b> 밟고 몸을 송구 쪽으로 쭉 뻗어 받기','타자주자가 <b>1루를 밟았는지</b> 눈으로 확인 → 안 밟았으면 공 들고 1루 밟고 심판에게 어필','주자 1루: 베이스에 붙어 견제 받을 준비, 투구 직후 2걸음 앞으로'],back:['<b>장타(2루타 이상)</b>: 타자주자를 따라 <b>2루로</b> 가서 커버 / 중계 2차 라인','우중간 단타·주자 없음: 타자주자 1루 터치 확인 후 1루 커버 복귀','홈 송구 상황(우익수 쪽): <b>홈 송구 커트맨</b> (투수–홈 사이)'],hi:['1B'],arrows:[['1B','2','m']],pos:{}},
+P:{n:'투수',base:'투구 후 바로 수비 자세',must:['1루 쪽 땅볼이면 <b>무조건 1루로 출발</b> (1루수가 잡으면 내가 커버)','번트: 앞으로 달려 잡고 포수 콜 따라 송구'],back:['외야 장타·3루 송구: <b>3루 뒤 백업</b>','홈 송구: <b>홈 뒤 백업</b> (포수 뒤 펜스 쪽)'],hi:['P'],arrows:[['P','1','m']],pos:{}}};
+const POSLIST=[['1B','1루수'],['P','투수'],['C','포수'],['2B','2루수'],['SS','유격수'],['3B','3루수'],['LF','좌익수'],['CF','중견수'],['RF','우익수']];
+{const svg=document.getElementById('fPos'),ch=document.getElementById('posChips'),cd=document.getElementById('posCard');field(svg);
+ const show=k=>{ch.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));const d=POS[k];if(!d){draw(svg,{hi:[k]});cd.innerHTML=`<h3>${POSLIST.find(p=>p[0]===k)[1]} <span class="tag">작성 예정</span></h3><p style="color:var(--sub)">확정 후 1루수와 같은 형식(기본 위치 · 꼭 할 일 · 백업/커버 + 그림)으로 채웁니다.</p>`;return}
+  draw(svg,{hi:d.hi,arrows:d.arrows,note:'주황 = '+d.n+' · 화살표 = 장타 때 이동'});cd.innerHTML=`<h3>${d.n}</h3><dl class="kv"><dt>기본 위치</dt><dd>${d.base}</dd></dl><b>꼭 할 일</b><ul class="ck">${d.must.map(x=>`<li>${x}</li>`).join('')}</ul><b>백업 · 커버</b><ul class="ck">${d.back.map(x=>`<li>${x}</li>`).join('')}</ul>`};
+ ch.innerHTML=POSLIST.map(([k,n])=>`<button data-k="${k}">${n}${POS[k]?'':' ·'}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('1B')}
+// ---- ③ 런다운 ----
+{const r1=[180,145];player(document.getElementById('rd'),document.getElementById('fRd'),document.getElementById('rdSteps'),[
+{t:'투수 견제 → 1루 주자가 1·2루 사이에 갇힘. <b>1루수</b>가 공을 잡음',runners:[r1],hi:['1B'],ball:[204,168],arrows:[['P','1','ball']]},
+{t:'<b>1루수</b>: 주자 쪽으로 달려 2루 쪽으로 가게 만든 뒤 <b>2루 커버(유격수)에게 송구</b>. <b>투수</b>는 1루 커버로 이동',runners:[[166,130]],hi:['1B','SS','P'],pos:{'1B':[196,154],SS:[146,116],P:[200,168]},ball:[146,116],arrows:[[[196,154],[146,116],'ball'],['SS',[146,116]],['P',[200,168]]]},
+{t:'<b>유격수</b>: 공을 머리 위로 들고 주자를 <b>원래 베이스(1루) 쪽으로 몰기</b>. 1루수는 송구 후 길에서 비켜 2루 쪽 대기',runners:[[184,148]],hi:['SS','P'],pos:{SS:[166,132],'1B':[166,150],P:[202,170]},ball:[166,128],arrows:[[[146,116],[166,132]]]},
+{t:'<b>투수</b> "지금!" 콜 → 유격수 짧게 토스 → 투수가 앞으로 나오며 받아 태그 아웃',runners:[[194,158]],hi:['P','SS'],pos:{SS:[176,140],'1B':[166,150],P:[198,162]},arrows:[[[176,140],[198,162],'ball']],note:'목표: 송구 1~2번 · 원래 베이스 쪽으로 몰기'}])}
+// ---- ④ 상황별 수비 ----
+const SIT={gap:{title:'주자 없음 · 좌중간 장타',tip:'⚾ 1루수는 타자주자를 따라 <b>2루로</b> 간다. 1루가 비어도 괜찮다 — 장타면 1루로 송구할 일이 없다.',steps:[
+{t:'타구가 좌중간을 가름. <b>좌익수·중견수</b>가 공 쫓기',ball:[100,70],hi:['LF','CF'],arrows:[[[150,232],[100,70],'ball'],['LF',[104,52]],['CF',[118,44]]]},
+{t:'<b>유격수</b>: 좌중간 외야 쪽으로 나가 1차 중계(양팔 들고 목표 표시). <b>2루수</b>: 유격수 뒤 15~20m 2차 중계',ball:[100,70],hi:['SS','2B'],pos:{LF:[106,52],CF:[116,46],SS:[118,84],'2B':[138,108]},arrows:[['SS',[118,84]],['2B',[138,108]]]},
+{t:'<b>1루수</b>: 타자주자가 1루 밟는지 보고 <b>2루 커버</b>. <b>3루수</b> 3루 커버, <b>투수</b> 3루 뒤 백업, <b>포수</b> 홈',ball:[100,70],hi:['1B','3B','P'],pos:{LF:[106,52],CF:[116,46],SS:[118,84],'2B':[138,108],'1B':[156,112],'3B':[90,170],P:[76,190]},runners:[[192,158,'타']],arrows:[['1B',[156,112]],['P',[76,190]],['3B',[90,170]]]},
+{t:'중견수 → 유격수(중계) → <b>3루 또는 2루</b>. 2차 중계(2루수)가 "3루!" "2루!" 콜',ball:[92,170],hi:['SS','3B'],pos:{LF:[106,52],CF:[116,46],SS:[118,84],'2B':[138,108],'1B':[156,112],'3B':[90,170],P:[76,190]},runners:[[156,116,'타']],arrows:[[[116,46],[118,84],'ball'],[[118,84],[92,170],'ball']],note:'중계는 낮고 강하게, 짧게 두 번'}]},
+bunt:{title:'주자 1루 · 희생번트',tip:'⚾ 포수가 "1루!" "2루!"를 콜한다. 잡은 사람은 콜만 듣고 던지기.',steps:[{t:'작성 예정 · 1·3루수 전진, 2루수 1루 커버, 유격수 2루 커버',hi:['1B','3B']}]},
+dp:{title:'주자 1루 · 내야 땅볼 병살',tip:'',steps:[{t:'작성 예정',hi:['SS','2B']}]},
+steal:{title:'주자 1루 · 도루',tip:'',steps:[{t:'작성 예정',hi:['SS','2B']}]},
+fly:{title:'주자 3루 · 외야 뜬공 태그업',tip:'',steps:[{t:'작성 예정',hi:['C','P']}]}};
+{const root=document.getElementById('sit'),ch=document.getElementById('sitChips');const show=k=>{ch.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));const s=SIT[k];document.getElementById('sitTitle').textContent=s.title;document.getElementById('sitTip').innerHTML=s.tip||'';document.getElementById('sitTip').hidden=!s.tip;player(root,document.getElementById('fSit'),document.getElementById('sitSteps'),s.steps)};
+ ch.innerHTML=Object.entries(SIT).map(([k,s])=>`<button data-k="${k}">${s.title}${s.steps.length>1?'':' ·'}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('gap')}
+</script></body></html>
