@@ -34,9 +34,18 @@ td.cur{outline:2px solid #fac775;outline-offset:-3px}
 .nx span:first-child{border-color:#fac775;color:#fac775;font-weight:700}
 .note{font-size:11px;color:#a9c6a4;margin:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ex{font-size:12px;color:#8a5a00;background:#fff5dd;border:1px solid #f0d58a;border-radius:8px;padding:6px 9px;margin:0 0 14px}
+.mx{display:grid;grid-template-columns:auto 1fr 1fr;gap:5px;margin-top:8px;font-size:12.5px}
+.mx .h{font-size:11.5px;color:#fac775;font-weight:700;text-align:center;padding:2px 0}
+.mx .rl{font-size:11px;color:#a9c6a4;writing-mode:horizontal-tb;display:flex;align-items:center;justify-content:center;padding:0 2px;white-space:nowrap}
+.mx .c{background:#0f2a16;border:1px solid #2c5534;border-radius:8px;padding:6px 7px;min-width:0}
+.mx .c.on{border:2px solid #e24b4a;background:#2a1d1a}
+.mx .c b{font-size:13.5px}.mx .c .s{color:#dbe8d6;font-size:11.5px;margin-top:2px;line-height:1.35}
+.mx .c .s em{font-style:normal;color:#ffb3ab;font-weight:700}
+.mx .c .bt{display:flex;flex-direction:column;gap:2px}.mx .c .bt span:first-child{color:#fac775;font-weight:700}
+.vsb{font-size:11px;color:#e24b4a;font-weight:700;text-align:center;grid-column:1/-1;margin-top:-1px}
 </style></head><body><div class="wrap">
 <h1>실시간 보드 개편 미리보기</h1>
-<p class="cap">스코어보드 안에 ① 공수 상황 ② 현재 시각·경기 경과 시간 ③ 상대 투수 오늘 투구 / 우리 다음 타자를 배치한 시안입니다.</p>
+<p class="cap">스코어보드 안에 ① 공수 상황 ② 현재 시각·경기 경과 시간 ③ 양 팀 투수 오늘 투구·다음 타자 현황판을 배치한 시안입니다.</p>
 <div class="ex">선수 이름·오늘 투구 수치는 배치를 보기 위한 <b>예시 값</b>입니다. 실제 화면은 게임원 박스스코어에서 읽어 옵니다.</div>
 
 <span class="lbl">상태 A · 우리 공격 차례</span>
@@ -47,12 +56,7 @@ td.cur{outline:2px solid #fac775;outline-offset:-3px}
   <table><thead><tr><th>팀</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th class="tot first">R</th><th class="tot">H</th><th class="tot">E</th><th class="tot">B</th></tr></thead>
   <tbody><tr><td>RED ONE</td><td>8</td><td>2</td><td>0</td><td>8</td><td></td><td></td><td></td><td class="tot first">18</td><td class="tot">11</td><td class="tot">6</td><td class="tot">8</td></tr>
   <tr><td>놀음꾼들</td><td>1</td><td>1</td><td>0</td><td class="cur"></td><td></td><td></td><td></td><td class="tot first">2</td><td class="tot">7</td><td class="tot">3</td><td class="tot">2</td></tr></tbody></table>
-  <div class="info">
-   <div class="box"><div class="k">상대 투수 · 오늘</div><div class="v">61 안철현 <small>3이닝째 · 투구 58</small></div>
-    <div class="chips"><span>피안타 7</span><span class="w">4사구 2</span><span>삼진 1</span><span>2실점</span></div></div>
-   <div class="box"><div class="k">우리 다음 타자</div>
-    <div class="nx"><span>4번 타자A</span><span>5번 타자B</span><span>6번 타자C</span></div></div>
-  </div>
+  <div class="mx"><div></div><div class="h">RED ONE (상대)</div><div class="h">놀음꾼들 (우리)</div><div class="rl">투수</div><div class="c on"><b>61 안철현</b><div class="s">오늘 4이닝 · 투구 72<br>피안타7 · <em>4사구2</em> · 2실점</div></div><div class="c"><b>18 투수X</b><div class="s">오늘 4이닝 · 투구 95<br>피안타11 · <em>4사구8</em> · 18실점</div></div><div class="rl">다음<br>타자</div><div class="c"><div class="bt"><span>7번 상대타자G</span><span>8번 상대타자H</span><span>9번 상대타자I</span></div></div><div class="c on"><div class="bt"><span>4번 타자A</span><span>5번 타자B</span><span>6번 타자C</span></div></div><div class="vsb">빨간 칸 = 지금 맞대결 · 상대 투수 안철현 vs 우리 4번부터</div></div>
   <div class="note">게임원 박스스코어 기준 · 입력 지연 가능 (놀음꾼들=우리팀 가정)</div>
  </div>
 </div>
@@ -65,14 +69,9 @@ td.cur{outline:2px solid #fac775;outline-offset:-3px}
   <table><thead><tr><th>팀</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th class="tot first">R</th><th class="tot">H</th><th class="tot">E</th><th class="tot">B</th></tr></thead>
   <tbody><tr><td>RED ONE</td><td>8</td><td>2</td><td>0</td><td>8</td><td class="cur"></td><td></td><td></td><td class="tot first">18</td><td class="tot">11</td><td class="tot">6</td><td class="tot">8</td></tr>
   <tr><td>놀음꾼들</td><td>1</td><td>1</td><td>0</td><td>0</td><td></td><td></td><td></td><td class="tot first">2</td><td class="tot">7</td><td class="tot">3</td><td class="tot">2</td></tr></tbody></table>
-  <div class="info">
-   <div class="box"><div class="k">상대 투수 · 오늘 (교체 전까지 유지)</div><div class="v">61 안철현 <small>4이닝 · 투구 72</small></div>
-    <div class="chips"><span>피안타 7</span><span class="w">4사구 2</span><span>삼진 1</span><span>2실점</span></div></div>
-   <div class="box"><div class="k">우리 다음 공격 선두</div>
-    <div class="nx"><span>7번 타자D</span><span>8번 타자E</span><span>9번 타자F</span></div></div>
-  </div>
+  <div class="mx"><div></div><div class="h">RED ONE (상대)</div><div class="h">놀음꾼들 (우리)</div><div class="rl">투수</div><div class="c"><b>61 안철현</b><div class="s">오늘 4이닝 · 투구 72<br>피안타7 · <em>4사구2</em> · 2실점</div></div><div class="c on"><b>18 투수X</b><div class="s">오늘 4이닝 · 투구 95<br>피안타11 · <em>4사구8</em> · 18실점</div></div><div class="rl">다음<br>타자</div><div class="c on"><div class="bt"><span>7번 상대타자G</span><span>8번 상대타자H</span><span>9번 상대타자I</span></div></div><div class="c"><div class="bt"><span>4번 타자A</span><span>5번 타자B</span><span>6번 타자C</span></div></div><div class="vsb">빨간 칸 = 지금 맞대결 · 우리 투수 투수X vs 상대 7번부터</div></div>
   <div class="note">게임원 박스스코어 기준 · 입력 지연 가능 (놀음꾼들=우리팀 가정)</div>
  </div>
 </div>
-<p class="cap">· 현재 시각은 1초마다 갱신(상태 A 카드는 실제 시계로 동작) · 노란 테두리 칸 = 지금 진행 중인 반 이닝 · 상대 투수 4사구가 많으면 빨간 칩으로 강조 · 휴대폰에서는 두 칸이 위아래, 태블릿에서는 좌우 배치</p>
+<p class="cap">· 현재 시각은 1초마다 갱신(상태 A 카드는 실제 시계로 동작) · 노란 테두리 칸 = 지금 진행 중인 반 이닝 · 현황판: 열 = 팀, 행 = 투수/다음 타자 · 빨간 테두리 = 지금 맞붙는 투수와 타자 · 4사구는 강조색</p>
 </div><script>{const p=n=>String(n).padStart(2,"0"),st=new Date();st.setHours(13,0,0,0);const t=()=>{const d=new Date(),e=Math.max(0,Math.floor((d-st)/60000));const a=document.querySelector(".tm");a.innerHTML=`<b class="now">${p(d.getHours())}:${p(d.getMinutes())}</b><span class="lb"> 현재</span> · 경과 ${Math.floor(e/60)}:${p(e%60)}`};t();setInterval(t,1000)}</script></body></html>
