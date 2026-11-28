@@ -100,7 +100,7 @@ summary::after{content:"펼치기 ▾";font-size:12.5px;font-weight:500;color:va
 body.self .olg{border-radius:8px}
 .prole{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:#27500A;border-radius:6px;padding:2px 8px;margin-bottom:6px}
 :root[data-theme=dark] .cd,:root[data-theme=dark] .pc,:root[data-theme=dark] .lc{box-shadow:0 0 0 1px #4d6a55,0 6px 16px rgba(0,0,0,.45)}
-</style>
+.prole.now{background:#c8352f!important;color:#fff!important}.prole.next{background:#f2b33d!important;color:#3a2a00!important}.prole.cand{background:#2f6fa8!important;color:#fff!important}.pc.pr-now{border:2px solid #c8352f!important}.pc.pr-next{border:2px solid #f2b33d!important}</style>
 </head>
 <body>
 <header class="top">
@@ -253,8 +253,8 @@ const pcard=p=>{const[no,name]=split(p.nm);const o=outs(p.IP),bb7=((p.BB+p.HBP)/
  <div class="note" style="margin:2px 0 4px">${p.G}경기 · ${ip}이닝 · 피안타 ${p.H} · 피홈런 ${p.HR} · 4사구 ${p.BB+p.HBP} · 탈삼진 ${p.SO}</div>
  ${tags.map(t=>`<span class="pill ${t[0]}">${t[1]}</span>`).join('')}<ul class="atk">${[...new Set(atk)].map(a=>`<li>${esc(a)}</li>`).join('')}</ul></article>`};const pitHtml=(list,pin)=>{pin=pin||[];const big=p=>outs(p.IP)>=15||pin.includes(p.nm);let show=list.filter(big),rest=list.filter(p=>!big(p));if(D.self){show=list;rest=[]}else if(!show.length){show=list.slice(0,2);rest=list.slice(2)}return show.map(pcard).join('')+(rest.length?`<details class="more" style="grid-column:1/-1"><summary>표본 적은 투수 ${rest.length}명 (5이닝 미만) 더 보기</summary><div class="pgrid" style="padding:0 10px 10px">${rest.map(pcard).join('')}</div></details>`:'')};
 document.getElementById('pit').innerHTML=pitHtml(D.pit,D.pinPit);
-const pitLive=(cur,used,curLab)=>{const base=x=>String(x).replace(/\(.*\)/,'');const find=n=>D.pit.find(p=>base(p.nm)===base(n));const tag=(h,r)=>h.replace('<article class="pc">',`<article class="pc"><div class="prole">${r}</div>`);const ub=(used||[]).map(base);let out='';const cp=cur?find(cur):null;
- const CL=curLab||'현재 투수';if(cur)out+=cp?tag(pcard(cp),CL):`<article class="pc"><div class="prole">${CL}</div><div class="hd"><span class="who"><span class="nmx">${esc(cur)}</span></span></div><div class="note">26년 기록 없음</div></article>`;
+const pitLive=(cur,used,curLab)=>{const base=x=>String(x).replace(/\(.*\)/,'');const find=n=>D.pit.find(p=>base(p.nm)===base(n));const rc=r=>/^(현재|선발 투수)/.test(r)?'now':/교체/.test(r)?'next':'cand';const tag=(h,r)=>h.replace('<article class="pc">',`<article class="pc pr-${rc(r)}"><div class="prole ${rc(r)}">${r}</div>`);const ub=(used||[]).map(base);let out='';const cp=cur?find(cur):null;
+ const CL=curLab||'현재 투수';if(cur)out+=cp?tag(pcard(cp),CL):`<article class="pc pr-now"><div class="prole now">${CL}</div><div class="hd"><span class="who"><span class="nmx">${esc(cur)}</span></span></div><div class="note">26년 기록 없음</div></article>`;
  const rest=D.pit.filter(p=>!ub.includes(base(p.nm))),big=rest.filter(p=>outs(p.IP)>=15),pick=(cur?[big[0]||rest[0]]:[big[0]||rest[0],big[1]]).filter(Boolean);
  pick.forEach(p=>out+=tag(pcard(p),cur?'예상 교체 투수':'예상 선발 후보'));
  const gone=D.pit.filter(p=>ub.includes(base(p.nm))&&p!==cp),oth=rest.filter(p=>!pick.includes(p)),fold=(l,s)=>l.length?`<details class="more" style="grid-column:1/-1"><summary>${s} ${l.length}명</summary><div class="pgrid" style="padding:0 10px 10px">${l.map(pcard).join('')}</div></details>`:'';
