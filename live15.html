@@ -30,7 +30,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Noto Sans KR
 h2{font-size:18px;margin:20px 2px 8px;font-weight:700;display:flex;align-items:center;gap:8px}
 h2 .cnt{font-size:13px;font-weight:500;color:var(--sub)}
 .cd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
-.cd.lead{border:3px solid #ef7d22;box-shadow:0 0 0 3px rgba(239,125,34,.22)}.leadb{display:inline-block;background:#ef7d22;color:#fff;font-size:12.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-bottom:4px}.cd.sub{border-style:dashed}
+.cd.lead{border:3px solid #ef7d22;box-shadow:0 0 0 3px rgba(239,125,34,.22)}.leadb{display:inline-block;background:#ef7d22;color:#fff;font-size:12.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-bottom:4px}.cd.sub{border-style:dashed}h1 .stc{display:inline-block;vertical-align:middle;font-size:.5em;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#ffd28a;margin-left:6px;white-space:nowrap;position:relative;top:-2px}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:6px}
 .who{display:flex;align-items:center;gap:7px;font-size:19px;font-weight:700;line-height:1.2}
 .ord{flex:none;width:28px;height:28px;border-radius:50%;background:#27500A;color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700;border:2px solid #97C459}
@@ -235,7 +235,7 @@ if(D.mode==='lineup'){
 const fullHtml=()=>{document.getElementById('fullHead').innerHTML=`26년 타자 전체 <span class="cnt">${esc(D.orderLabel||'게임원 타자기록 순')} · ${(D.roster||[]).length}명</span>`;document.getElementById('full').innerHTML=(D.roster||[]).map(r=>card(r,{kind:'pre'})).join('')};
 fullHtml();
 const show=v=>{document.getElementById('vLineup').hidden=v!=='L';document.getElementById('vFull').hidden=v!=='F';document.getElementById('vbL').setAttribute('aria-pressed',v==='L');document.getElementById('vbF').setAttribute('aria-pressed',v==='F');document.getElementById('nav').style.display=v==='L'?'flex':'none';
- if(v==='L'){render();return}document.getElementById('title').textContent=D.opp+' · '+(D.mode==='lineup'?'26년 전체 기록':'라인업 발표 전')};
+ if(v==='L'){render();return}document.getElementById('title').innerHTML=esc(D.opp)+(D.mode==='lineup'?' <span class="stc">26년 전체 기록</span>':' <span class="stc">라인업 발표 전</span>')};
 if(D.mode==='lineup'){document.getElementById('vbL').addEventListener('click',()=>show('L'));document.getElementById('vbF').addEventListener('click',()=>show('F'));show('L')}
 else{document.getElementById('seg').hidden=true;show('F')}
 const outs=ip=>{const[a,b]=String(ip).split('.');return(+a)*3+(+b||0)};
@@ -307,7 +307,7 @@ function draw(){const st=$('fst');const tx=lastOk?`마지막 확인 ${lastOk.toL
  const n=Math.max(7,filled(S.opp.inn),filled(S.us.inn));const A=S.oppFirst?[S.opp,S.us]:[S.us,S.opp];const nmOf=r=>r===S.opp?D.opp:F.usName;
  $('sbBox').innerHTML=`<div class="sb"><table><thead><tr><th>팀</th>${[...Array(n)].map((_,i)=>`<th>${i+1}</th>`).join('')}<th class="tot first">득점</th><th class="tot">안타</th><th class="tot">실책</th><th class="tot">4사구</th></tr></thead><tbody>${A.map(r=>`<tr><td>${esc(nmOf(r))}</td>${[...Array(n)].map((_,i)=>`<td>${esc(r.inn[i]||'')}</td>`).join('')}${[0,1,2,3].map(i=>`<td class="tot${i?'':' first'}">${esc(r.tot[i]||'')}</td>`).join('')}</tr>`).join('')}</tbody></table><div class="st2">게임원 박스스코어 기준 · 기록원 입력 시점에 따라 실제 경기보다 늦을 수 있음 · ${esc(F.usName)}을(를) 우리 팀으로 가정한 테스트</div></div>`;
  const R=S.rows,nu=nextUp(R);const done=filled(S.opp.inn);
- if(!R.length){$('pit').innerHTML=pitLive(null,[]);$('title').textContent=`${D.opp} · 라인업 발표 전 (자동 확인 중)`;$('mainHead').innerHTML='라인업 발표 전';$('main').innerHTML=`<div class="pc note" style="grid-column:1/-1">게임원에 ${esc(D.opp)} 라인업이 올라오면 이 화면에 자동으로 반영됩니다. 그 전에는 '26년 전체 기록'에서 선수별 기록을 볼 수 있습니다.</div>`;$('starters').innerHTML='';$('subs').innerHTML='';$('subCnt').textContent='';$('liveOpp').innerHTML='';return}
+ if(!R.length){$('pit').innerHTML=pitLive(null,[]);$('title').innerHTML=`${esc(D.opp)} <span class="stc">라인업 발표 전 · 자동 확인 중</span>`;$('mainHead').innerHTML='라인업 발표 전';$('main').innerHTML=`<div class="pc note" style="grid-column:1/-1">게임원에 ${esc(D.opp)} 라인업이 올라오면 이 화면에 자동으로 반영됩니다. 그 전에는 '26년 전체 기록'에서 선수별 기록을 볼 수 있습니다.</div>`;$('starters').innerHTML='';$('subs').innerHTML='';$('subCnt').textContent='';$('liveOpp').innerHTML='';return}
  const starters=nu.slots.map(s=>R.find(r=>r[0]===s)),subs=R.filter(r=>!starters.includes(r));
  if(nu.start!==lastStart){adj=0;lastStart=nu.start}const mm=Math.max(nu.m,done),inProg=nu.m>done;const N=nu.N,k=Math.min(6,N),start=((nu.start+adj)%N+N)%N;
  const six=[];for(let i=0;i<N;i++){const s=nu.slots[i],r=occAt(R,s,mm+1);six.push({o:s,pos:r[1],nm:r[2],memo:today(r)?'오늘: '+today(r):'',_i:i})}
