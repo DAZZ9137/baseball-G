@@ -65,9 +65,10 @@ ul.ck{margin:4px 0;padding-left:1.2em}ul.ck li{margin:2px 0}
 <div class="one">베이스를 안 밟고 지나가면, 수비가 "어필"해서 아웃시킬 수 있다</div>
 <dl class="kv"><dt>1루</dt><dd>지나쳐 달려도(오버런) 됨. 단, 돌아올 때 <b>2루 쪽으로 몸을 틀면</b> 진루 의사로 보고 태그 아웃 가능</dd>
 <dt>2·3루</dt><dd>지나치면 태그 아웃. 슬라이딩·멈춤으로 베이스 위에서 끝낼 것</dd>
+<dt>귀루</dt><dd>뜬공이 잡혀 돌아올 때는 <b>지나간 베이스를 거꾸로 다시 밟으며</b> 돌아온다 (예: 2루 지나 3루 근처 → 2루 밟고 → 1루). 건너뛰면 어필 아웃</dd>
 <dt>홈</dt><dd>홈을 안 밟고 덕아웃 가면 득점 무효 가능. 포수 태그 피했으면 <b>다시 돌아와 밟기</b></dd>
 <dt>어필 방법</dt><dd>(수비) 공을 가진 채 그 베이스를 밟거나 주자를 태그하고 심판에게 "안 밟았다"고 알림. <b>다음 투구 전</b>에 해야 함</dd></dl>
-<div class="src">공식야구규칙 5.09(b)(4) 오버런 · 5.09(c)(2) 어필</div></div>
+<div class="src">공식야구규칙 5.06(b)(1) 역순 귀루 · 5.09(b)(4) 오버런 · 5.09(c)(2) 어필</div></div>
 <div class="card"><h3>태그업 <span class="tag">뜬공 진루</span></h3>
 <div class="one">뜬공은 "잡히는 순간" 출발. 그 전에 출발하면 어필로 아웃</div>
 <dl class="kv"><dt>언제</dt><dd>2아웃 전, 외야 뜬공이 깊을 때(3루 주자는 거의 항상 준비)</dd>
@@ -164,7 +165,15 @@ ul.ck{margin:4px 0;padding-left:1.2em}ul.ck li{margin:2px 0}
 <li>사구 2개 이상이면 심판이 <b>투수 교체 권유</b> 가능</li>
 <li>합의판정 <b>팀별 2회</b> (감독·감독대행만)</li>
 <li>스트라이크·볼·파울·페어·세이프·아웃 판정은 어필 불가</li>
-<li>성남고 인조잔디: <b>징 스파이크 금지</b></li></ul></div>
+<li>성남고 인조잔디: <b>징 스파이크 금지</b> (착용 시 몰수패)</li></ul></div>
+<div class="card"><h3>🏏 배트·장비</h3><ul class="ck">
+<li>사용 가능: <b>알로이 배트</b>, 헤드가 알로이인 <b>2피스 배트</b>, <b>나무 배트</b></li>
+<li>사용 불가: <b>-5 드롭보다 가벼운 배트</b>, 알로이 외 다른 소재 배트</li>
+<li>선수 출신은 <b>나무 배트만</b></li>
+<li>타격 중 상대가 부정 배트를 지적하면 → <b>규정 배트로 교체</b></li>
+<li>타격 끝난 뒤 <b>다음 타자 투구 전</b>에 지적되면 → <b>타자 아웃</b>, 그 플레이의 진루·득점 무효</li>
+<li>포수는 반드시 <b>포수 헬멧</b> (미착용 시 출전 불가)</li>
+<li>장비가 없어 경기 진행이 안 되면 몰수 선언 가능 (상대 허락 시 빌려 사용 가능)</li></ul></div>
 <div class="card"><h3>🏆 순위·성적</h3><ul class="ck">
 <li>승점제: <b>승 3 · 무 1 · 패 0</b></li>
 <li>동률: 승자승 → 몰수패 없는 팀 → 실점 적은 팀 → 득점 많은 팀</li>
@@ -200,11 +209,11 @@ function player(root,svg,ol,steps){let i=0,tm=null;const st=root.querySelector('
 // ---- ① 포지션 ----
 const POS={'1B':{n:'1루수',base:'1루 베이스에서 2~3걸음 뒤, 파울라인 쪽 1~2걸음',must:['내야 땅볼: 1루로 달려가 <b>베이스 모서리를 발끝으로</b> 밟고 몸을 송구 쪽으로 쭉 뻗어 받기','타자주자가 <b>1루를 밟았는지</b> 눈으로 확인 → 안 밟았으면 공 들고 1루 밟고 심판에게 어필','주자 1루: 베이스에 붙어 견제 받을 준비, 투구 직후 2걸음 앞으로'],back:['<b>장타(2루타 이상)</b>: 타자주자를 따라 <b>2루로</b> 가서 커버 / 중계 2차 라인','우중간 단타·주자 없음: 타자주자 1루 터치 확인 후 1루 커버 복귀','홈 송구 상황(우익수 쪽): <b>홈 송구 커트맨</b> (투수–홈 사이)'],hi:['1B'],arrows:[['1B','2','m']],pos:{}},
 P:{n:'투수',base:'투구 후 바로 수비 자세',must:['1루 쪽 땅볼이면 <b>무조건 1루로 출발</b> (1루수가 잡으면 내가 커버)','번트: 앞으로 달려 잡고 포수 콜 따라 송구'],back:['외야 장타·3루 송구: <b>3루 뒤 백업</b>','홈 송구: <b>홈 뒤 백업</b> (포수 뒤 펜스 쪽)'],hi:['P'],arrows:[['P','1','m']],pos:{}}};
-const POSLIST=[['1B','1루수'],['P','투수'],['C','포수'],['2B','2루수'],['SS','유격수'],['3B','3루수'],['LF','좌익수'],['CF','중견수'],['RF','우익수']];
+const POSLIST=[['P','투수',1],['C','포수',2],['1B','1루수',3],['2B','2루수',4],['3B','3루수',5],['SS','유격수',6],['LF','좌익수',7],['CF','중견수',8],['RF','우익수',9]];
 {const svg=document.getElementById('fPos'),ch=document.getElementById('posChips'),cd=document.getElementById('posCard');field(svg);
- const show=k=>{ch.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));const d=POS[k];if(!d){draw(svg,{hi:[k]});cd.innerHTML=`<h3>${POSLIST.find(p=>p[0]===k)[1]} <span class="tag">작성 예정</span></h3><p style="color:var(--sub)">확정 후 1루수와 같은 형식(기본 위치 · 꼭 할 일 · 백업/커버 + 그림)으로 채웁니다.</p>`;return}
-  draw(svg,{hi:d.hi,arrows:d.arrows,note:'주황 = '+d.n+' · 화살표 = 장타 때 이동'});cd.innerHTML=`<h3>${d.n}</h3><dl class="kv"><dt>기본 위치</dt><dd>${d.base}</dd></dl><b>꼭 할 일</b><ul class="ck">${d.must.map(x=>`<li>${x}</li>`).join('')}</ul><b>백업 · 커버</b><ul class="ck">${d.back.map(x=>`<li>${x}</li>`).join('')}</ul>`};
- ch.innerHTML=POSLIST.map(([k,n])=>`<button data-k="${k}">${n}${POS[k]?'':' ·'}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('1B')}
+ const show=k=>{ch.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));const d=POS[k];if(!d){draw(svg,{hi:[k]});cd.innerHTML=`<h3><span class="tag">${POSLIST.find(p=>p[0]===k)[2]}번</span>${POSLIST.find(p=>p[0]===k)[1]} <span class="tag">작성 예정</span></h3><p style="color:var(--sub)">확정 후 1루수와 같은 형식(기본 위치 · 꼭 할 일 · 백업/커버 + 그림)으로 채웁니다.</p>`;return}
+  draw(svg,{hi:d.hi,arrows:d.arrows,note:'주황 = '+d.n+' · 화살표 = 장타 때 이동'});cd.innerHTML=`<h3><span class="tag">${POSLIST.find(p=>p[0]===k)[2]}번</span>${d.n}</h3><dl class="kv"><dt>기본 위치</dt><dd>${d.base}</dd></dl><b>꼭 할 일</b><ul class="ck">${d.must.map(x=>`<li>${x}</li>`).join('')}</ul><b>백업 · 커버</b><ul class="ck">${d.back.map(x=>`<li>${x}</li>`).join('')}</ul>`};
+ ch.innerHTML=POSLIST.map(([k,n,i])=>`<button data-k="${k}"><b>${i}</b> ${n}${POS[k]?'':' ·'}</button>`).join('');ch.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.k));show('P')}
 // ---- ③ 런다운 ----
 {const r1=[180,145];player(document.getElementById('rd'),document.getElementById('fRd'),document.getElementById('rdSteps'),[
 {t:'투수 견제 → 1루 주자가 1·2루 사이에 갇힘. <b>1루수</b>가 공을 잡음',runners:[r1],hi:['1B'],ball:[204,168],arrows:[['P','1','ball']]},
